@@ -10,21 +10,23 @@ project = gazu.project.get_project_by_name('tao')
 project_id = '665ce354-8e1f-41b5-9c47-16132aa98bc7'
 shots = gazu.shot.all_shots_for_project(project_id)
 # print(gazu.shot.get_shot(shots[0]['id']))
-cast_dir = []
-
-
-# casts = gazu.casting.get_shot_casting(shots[0])
-# for cast in casts:
-#     if cast['asset_type_name'] == 'chars':
-#         cast_dir.append({'filepath': 'C:/Users/Aderemi/projects/tao/lib/chars/' + cast['asset_name'] + '.blend', 'filename': cast['asset_name']})
-#     if cast['asset_type_name'] == 'envs':
-#         cast_dir.append({'filepath': 'C:/Users/Aderemi/projects/tao/lib/envs/' + cast['asset_name'] + '.blend', 'filename': cast['asset_name']})
-#     if cast['asset_type_name'] == 'props':
-#         cast_dir.append({'filepath': 'C:/Users/Aderemi/projects/tao/lib/props/' + cast['asset_name'] + '.blend', 'filename': cast['asset_name']})
-# with open('shot_data.json', 'w') as data:
-#     json.dump(cast_dir, data, indent=2)
-# ctypes.windll.shell32.ShellExecuteW(None, "open", "C:/Program Files/Blender Foundation/Blender 2.82/blender.exe",
-#                                     f' "C:/Users/Aderemi/projects/tao/scenes/01/01/01_01_anim.blend" --python "scenes_setup.py"', None, 1)
+cast_data = []
+shot_data = []
+# print(shots[0])
+# gazu.casting.
+casts = gazu.casting.get_shot_casting(shots[0])
+for cast in casts:
+    print(cast)
+    if cast['asset_type_name'] == 'chars':
+        cast_data.append({'filepath': 'C:/Users/Aderemi/projects/tao/lib/chars/' + cast['asset_name'] + '.blend', 'filename': cast['asset_name']})
+    if cast['asset_type_name'] == 'envs':
+        cast_data.append({'filepath': 'C:/Users/Aderemi/projects/tao/lib/envs/' + cast['asset_name'] + '.blend', 'filename': cast['asset_name']})
+    if cast['asset_type_name'] == 'props':
+        cast_data.append({'filepath': 'C:/Users/Aderemi/projects/tao/lib/props/' + cast['asset_name'] + '.blend', 'filename': cast['asset_name']})
+with open('shot_data.json', 'w') as data:
+    json.dump(cast_data, data, indent=2)
+ctypes.windll.shell32.ShellExecuteW(None, "open", "C:/Program Files/Blender Foundation/Blender 2.82/blender.exe",
+                                    f' "C:/Users/Aderemi/projects/tao/scenes/01/01/01_01_anim.blend" --python "scenes_setup.py"', None, 1)
 
 # for c in cast:
 #     if c['asset_type_name'] == 'chars':
@@ -41,7 +43,7 @@ cast_dir = []
 # print(cast)
 # print(len(shots))
 
-
+# gazu.files.build_working_file_path()
 
 def project_files_gen(username, password, project_name, blender, gazu_host):
     gazu.set_host(gazu_host)
@@ -133,6 +135,10 @@ def project_files_gen(username, password, project_name, blender, gazu_host):
             scene_shots = gazu.context.all_shots_for_sequence(scene_id)
             os.mkdir(project_path + '/scenes/' + scene_name)
             for shot in scene_shots:
+                shot_data.clear()
+                shot_data.append(shot['data'])
+                with open('shot_data.json', 'w') as s_data:
+                    json.dump(shot_data, s_data, indent=2)
                 shot_name = shot['name']
                 shot_path = project_path + '/scenes/' + scene_name + '/' + shot_name
                 shot_file_tasks = ['lighting', 'anim', 'layout']
@@ -145,16 +151,16 @@ def project_files_gen(username, password, project_name, blender, gazu_host):
                     shot_file_name_task = shot_path + '/' + shot_file_name + shot_file_task + '.blend'
                     os.rename(shot_path + '/genesis.blend', shot_file_name_task)
                     casts = gazu.casting.get_shot_casting(shot)
-                    cast_dir.clear()
+                    cast_data.clear()
                     for cast in casts:
                         if cast['asset_type_name'] == 'chars':
-                            cast_dir.append({'filepath': chars_path + cast['asset_name'] + '.blend', 'filename': cast['asset_name']})
+                            cast_data.append({'filepath': chars_path + cast['asset_name'] + '.blend', 'filename': cast['asset_name']})
                         if cast['asset_type_name'] == 'envs':
-                            cast_dir.append({'filepath': envs_path + cast['asset_name'] + '.blend', 'filename': cast['asset_name']})
+                            cast_data.append({'filepath': envs_path + cast['asset_name'] + '.blend', 'filename': cast['asset_name']})
                         if cast['asset_type_name'] == 'props':
-                            cast_dir.append({'filepath': props_path + cast['asset_name'] + '.blend', 'filename': cast['asset_name']})
-                    with open('shot_data.json', 'w') as data:
-                        json.dump(cast_dir, data, indent=2)
+                            cast_data.append({'filepath': props_path + cast['asset_name'] + '.blend', 'filename': cast['asset_name']})
+                    with open('cast_data.json', 'w') as data:
+                        json.dump(cast_data, data, indent=2)
                     ctypes.windll.shell32.ShellExecuteW(None, "open", blender, f'-b "{shot_file_name_task}" --python "./scenes_setup.py"', None, 1)
                     # ctypes.windll.shell32.ShellExecuteW(None, "open", blender,
                     #                                     f' -b "{shot_file_name_task}" --python "./scenes_setup.py"', None, 1)
