@@ -3,30 +3,57 @@ import gazu
 import shutil
 import ctypes
 import json
-
+from configparser import ConfigParser
 gazu.set_host('https://eaxum.cg-wire.com/api')
 gazu.log_in('aderemi@eaxum.com', 'efosadiya')
 project = gazu.project.get_project_by_name('tao')
 project_id = '665ce354-8e1f-41b5-9c47-16132aa98bc7'
 shots = gazu.shot.all_shots_for_project(project_id)
 # print(gazu.shot.get_shot(shots[0]['id']))
-cast_data = []
-shot_data = []
+
+a = gazu.asset.all_assets_for_project(project_id)
+shots = gazu.shot.all_shots_for_project(project_id)
+c = gazu.user.all_tasks_to_do()
+x = gazu.task.get_task('0f4e7d16-a059-494f-a978-d8e85c1e4c9d')
+d = gazu.files.build_working_file_path('f7bc1de7-7045-49be-b4ff-1cd36bf52f43')
+# print(b[0])
+# print(shots[0])
+directory= []
+for i in gazu.task.all_task_statuses():
+    if i['name'] == 'Todo':
+        print(i['name'])
+        print(i['id'])
+# print(gazu.task.all_tasks_for_task_status(project_id, task_status= 'd330fbea-6ac9-4927-b1cb-261ac390493b'))
+print(gazu.client.)
+# for shot in shots:
+#     shot_tasks = gazu.task.all_tasks_for_shot(shot)
+#     for shot_task in shot_tasks:
+#         shot_dir = gazu.files.build_working_file_path(shot_task)
+#         directory.append(shot_dir)
+# with open('directories.json', 'w') as data:
+#     json.dump(directory, data, indent=2)
+# gazu.person.get_person()
+
+# print(e[0]['id'])
+# for i in b:
+#     print(i['id'] + '  ' + i['entity_type_name'] + '   ' + i['task_type_name'] + '    ' + i['entity_name'])
+# cast_data = []
+# shot_data = []
 # print(shots[0])
 # gazu.casting.
-casts = gazu.casting.get_shot_casting(shots[0])
-for cast in casts:
-    print(cast)
-    if cast['asset_type_name'] == 'chars':
-        cast_data.append({'filepath': 'C:/Users/Aderemi/projects/tao/lib/chars/' + cast['asset_name'] + '.blend', 'filename': cast['asset_name']})
-    if cast['asset_type_name'] == 'envs':
-        cast_data.append({'filepath': 'C:/Users/Aderemi/projects/tao/lib/envs/' + cast['asset_name'] + '.blend', 'filename': cast['asset_name']})
-    if cast['asset_type_name'] == 'props':
-        cast_data.append({'filepath': 'C:/Users/Aderemi/projects/tao/lib/props/' + cast['asset_name'] + '.blend', 'filename': cast['asset_name']})
-with open('shot_data.json', 'w') as data:
-    json.dump(cast_data, data, indent=2)
-ctypes.windll.shell32.ShellExecuteW(None, "open", "C:/Program Files/Blender Foundation/Blender 2.82/blender.exe",
-                                    f' "C:/Users/Aderemi/projects/tao/scenes/01/01/01_01_anim.blend" --python "scenes_setup.py"', None, 1)
+# casts = gazu.casting.get_shot_casting(shots[0])
+# for cast in casts:
+#     print(cast)
+#     if cast['asset_type_name'] == 'chars':
+#         cast_data.append({'filepath': 'C:/Users/Aderemi/projects/tao/lib/chars/' + cast['asset_name'] + '.blend', 'filename': cast['asset_name']})
+#     if cast['asset_type_name'] == 'envs':
+#         cast_data.append({'filepath': 'C:/Users/Aderemi/projects/tao/lib/envs/' + cast['asset_name'] + '.blend', 'filename': cast['asset_name']})
+#     if cast['asset_type_name'] == 'props':
+#         cast_data.append({'filepath': 'C:/Users/Aderemi/projects/tao/lib/props/' + cast['asset_name'] + '.blend', 'filename': cast['asset_name']})
+# with open('shot_data.json', 'w') as data:
+#     json.dump(cast_data, data, indent=2)
+# ctypes.windll.shell32.ShellExecuteW(None, "open", "C:/Program Files/Blender Foundation/Blender 2.82/blender.exe",
+#                                     f' "C:/Users/Aderemi/projects/tao/scenes/01/01/01_01_anim.blend" --python "scenes_setup.py"', None, 1)
 
 # for c in cast:
 #     if c['asset_type_name'] == 'chars':
