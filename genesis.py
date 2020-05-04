@@ -8,37 +8,53 @@ gazu.set_host('https://eaxum.cg-wire.com/api')
 gazu.log_in('aderemi@eaxum.com', 'efosadiya')
 project = gazu.project.get_project_by_name('tao')
 project_id = '665ce354-8e1f-41b5-9c47-16132aa98bc7'
-shots = gazu.shot.all_shots_for_project(project_id)
+cast_data = []
+shot_data = []
 # print(gazu.shot.get_shot(shots[0]['id']))
-
-a = gazu.asset.all_assets_for_project(project_id)
 shots = gazu.shot.all_shots_for_project(project_id)
-c = gazu.user.all_tasks_to_do()
-x = gazu.task.get_task('0f4e7d16-a059-494f-a978-d8e85c1e4c9d')
-d = gazu.files.build_working_file_path('f7bc1de7-7045-49be-b4ff-1cd36bf52f43')
-# print(b[0])
-# print(shots[0])
+a = gazu.asset.all_assets_for_project(project_id)
+
+# print(gazu.task.all_tasks_for_shot(shots[0])[0])
+# print('##########################################################################################################')
+# test_task = gazu.task.get_task('f52dcd35-43a1-42dd-9d91-7d29c0be0219')
+# with open('tests.json', 'w') as test:
+#     json.dump(test_task, test, indent=2)
+kitsu_task_types = gazu.task.all_task_types()
+for kitsu_task_type in kitsu_task_types:
+    print(kitsu_task_type['name'])
 directory= []
-for i in gazu.task.all_task_statuses():
-    if i['name'] == 'Todo':
-        print(i['name'])
-        print(i['id'])
-# print(gazu.task.all_tasks_for_task_status(project_id, task_status= 'd330fbea-6ac9-4927-b1cb-261ac390493b'))
-print(gazu.client.)
+####################################################################################################
 # for shot in shots:
 #     shot_tasks = gazu.task.all_tasks_for_shot(shot)
 #     for shot_task in shot_tasks:
-#         shot_dir = gazu.files.build_working_file_path(shot_task)
-#         directory.append(shot_dir)
+#         task = gazu.task.get_task(shot_task['id'])
+#         task_type_name = task["task_type"]["name"]
+#         project_shot_tasks = ['anim', 'layout', 'lighting']
+#         task_dir = None
+#         for project_shot_task in project_shot_tasks:
+#             if task_type_name == project_shot_task:
+#                 task_dir = gazu.files.build_working_file_path(shot_task) + '/' + project_shot_task + '.blend'
+#             else:
+#                 task_dir = gazu.files.build_working_file_path(shot_task)
+#         assignees = []
+#         for user in task['assignees']:
+#             assignee = gazu.person.get_person(user)
+#             assignee_info = {'full_name': assignee['full_name'], 'id': assignee['id'], 'role': assignee['role']}
+#             assignees.append(assignee_info)
+#
+#         get_assignees = gazu.person.get_person("15b9dbfc-b47d-403b-827b-beaaaf3e52f6")
+#         task_info = {'task_id': task['id'], 'dir': task_dir, 'assignees': assignees}
+#         # if shot_dir not in directory:
+#         directory.append(task_info)
 # with open('directories.json', 'w') as data:
 #     json.dump(directory, data, indent=2)
-# gazu.person.get_person()
+################################################################################################
+
 
 # print(e[0]['id'])
 # for i in b:
 #     print(i['id'] + '  ' + i['entity_type_name'] + '   ' + i['task_type_name'] + '    ' + i['entity_name'])
-# cast_data = []
-# shot_data = []
+
 # print(shots[0])
 # gazu.casting.
 # casts = gazu.casting.get_shot_casting(shots[0])

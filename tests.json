@@ -1,0 +1,235 @@
+{
+  "description": null,
+  "project": {
+    "resolution": null,
+    "description": null,
+    "man_days": null,
+    "ratio": null,
+    "created_at": "2020-04-07T18:06:29",
+    "has_avatar": false,
+    "data": {
+      "project_name": "tao",
+      "repository_url": "https://helixteamhub.cloud/eaxum/projects/tao/repositories/subversion/tao"
+    },
+    "production_type": "short",
+    "updated_at": "2020-05-01T21:08:05",
+    "code": null,
+    "end_date": "2020-10-13",
+    "shotgun_id": null,
+    "fps": null,
+    "file_tree": {
+      "preview": {
+        "file_name": {
+          "style": "lowercase",
+          "sequence": "<Project>_<Sequence>_<TaskType>",
+          "scene": "<Project>_<Scene>_<TaskType>",
+          "asset": "<Project>_<AssetType>_<Asset>_<TaskType>",
+          "shot": "<Project>_<Sequence>_<Shot>_<TaskType>"
+        },
+        "root": "productions/previews",
+        "folder_path": {
+          "style": "lowercase",
+          "sequence": "<Project>/sequences/<Sequence>/<TaskType>",
+          "scene": "<Project>/scene/<Scene>/<TaskType>",
+          "asset": "<Project>/assets/<AssetType>/<Asset>/<TaskType>",
+          "shot": "<Project>/shots/<Sequence>/<Shot>/<TaskType>"
+        },
+        "mountpoint": "/simple"
+      },
+      "output": {
+        "file_name": {
+          "style": "lowercase",
+          "sequence": "<Project>_<Sequence>_<OuputType>_<OutputFile>",
+          "scene": "<Project>_<Sequence>_<Scene>_<OutputType>_<OutputFile>",
+          "asset": "<Project>_<AssetType>_<Asset>_<OutputType>_<OutputFile>",
+          "shot": "<Project>_<Sequence>_<Shot>_<OutputType>_<OutputFile>"
+        },
+        "root": "productions/export",
+        "folder_path": {
+          "style": "lowercase",
+          "sequence": "<Project>/sequences/<Sequence>/<OutputType>",
+          "scene": "<Project>/scenes/<Sequence>/<Scene>/<OutputType>",
+          "asset": "<Project>/assets/<AssetType>/<Asset>/<OutputType>",
+          "shot": "<Project>/shots/<Sequence>/<Shot>/<OutputType>"
+        },
+        "mountpoint": "/simple"
+      },
+      "working": {
+        "file_name": {
+          "style": "lowercase",
+          "sequence": "<Sequence>",
+          "scene": "<Scene>",
+          "asset": "<Asset>",
+          "shot": "<Sequence>_<Shot>"
+        },
+        "root": "projects",
+        "folder_path": {
+          "style": "lowercase",
+          "sequence": "<Project>/sequences/<Sequence>/<TaskType>",
+          "scene": "<Project>/scenes/<Sequence>/<Scene>/<TaskType>",
+          "asset": "<Project>/lib/<AssetType>",
+          "shot": "<Project>/scenes/<Sequence>/<Shot>"
+        },
+        "mountpoint": ""
+      }
+    },
+    "name": "Tao",
+    "start_date": "2020-04-22",
+    "id": "665ce354-8e1f-41b5-9c47-16132aa98bc7",
+    "type": "Project",
+    "project_status_id": "cf1f2985-f080-4b02-8ca3-d9196863e014"
+  },
+  "real_start_date": null,
+  "name": "main",
+  "data": null,
+  "end_date": null,
+  "entity_type": {
+    "updated_at": "2020-04-07T10:39:04",
+    "type": "EntityType",
+    "created_at": "2020-04-07T10:39:04",
+    "id": "e10f0586-ad84-4fc7-83c4-0df53e683f1b",
+    "name": "Shot"
+  },
+  "sort_order": 0,
+  "project_id": "665ce354-8e1f-41b5-9c47-16132aa98bc7",
+  "sequence": {
+    "description": null,
+    "updated_at": "2020-04-08T15:31:27",
+    "entity_type_id": "bc49c183-a7d5-4680-a424-073be98cd4ff",
+    "created_at": "2020-04-08T15:31:27",
+    "canceled": false,
+    "data": null,
+    "nb_frames": null,
+    "code": null,
+    "preview_file_id": null,
+    "shotgun_id": null,
+    "project_id": "665ce354-8e1f-41b5-9c47-16132aa98bc7",
+    "type": "Sequence",
+    "parent_id": null,
+    "id": "3898ecf7-5229-4324-8779-45afdae5b2da",
+    "name": "01",
+    "source_id": null
+  },
+  "start_date": null,
+  "persons": [
+    {
+      "full_name": "Taiwo Folu",
+      "notifications_enabled": false,
+      "role": "admin",
+      "email": "taiwofolu@eaxum.com",
+      "has_avatar": false,
+      "data": null,
+      "shotgun_id": null,
+      "phone": "",
+      "active": true,
+      "first_name": "Taiwo",
+      "notifications_slack_enabled": false,
+      "last_name": "Folu",
+      "locale": "en_US",
+      "timezone": "Europe/Paris",
+      "notifications_slack_userid": "",
+      "last_presence": null,
+      "created_at": "2020-04-07T17:14:04",
+      "updated_at": "2020-04-07T17:51:08",
+      "id": "15b9dbfc-b47d-403b-827b-beaaaf3e52f6",
+      "password": "$2b$12$vkp8hB2NZU/kREKFBeJJi.gmsO/NCunLsdc6jth2WTUYzIDsJcXlW",
+      "desktop_login": "",
+      "type": "Person"
+    }
+  ],
+  "last_comment_date": null,
+  "assigner_id": "15b9dbfc-b47d-403b-827b-beaaaf3e52f6",
+  "shotgun_id": null,
+  "assignees": [
+    "15b9dbfc-b47d-403b-827b-beaaaf3e52f6"
+  ],
+  "assigner": {
+    "full_name": "Taiwo Folu",
+    "notifications_enabled": false,
+    "role": "admin",
+    "email": "taiwofolu@eaxum.com",
+    "has_avatar": false,
+    "data": null,
+    "last_name": "Folu",
+    "phone": "",
+    "active": true,
+    "timezone": "Europe/Paris",
+    "notifications_slack_enabled": false,
+    "shotgun_id": null,
+    "locale": "en_US",
+    "first_name": "Taiwo",
+    "type": "Person",
+    "last_presence": null,
+    "created_at": "2020-04-07T17:14:04",
+    "updated_at": "2020-04-07T17:51:08",
+    "id": "15b9dbfc-b47d-403b-827b-beaaaf3e52f6",
+    "password": "$2b$12$vkp8hB2NZU/kREKFBeJJi.gmsO/NCunLsdc6jth2WTUYzIDsJcXlW",
+    "desktop_login": "",
+    "notifications_slack_userid": ""
+  },
+  "duration": 0,
+  "created_at": "2020-04-08T15:32:00",
+  "completion_rate": 0,
+  "task_type": {
+    "short_name": "",
+    "created_at": "2020-04-07T10:39:05",
+    "allow_timelog": true,
+    "updated_at": "2020-04-08T15:27:53",
+    "for_entity": "Asset",
+    "priority": 4,
+    "shotgun_id": null,
+    "department_id": "df0af5da-285c-4e6d-bb88-32fc5521059f",
+    "name": "anim",
+    "id": "f6261d47-9c48-4b1a-b301-8a65afaa3023",
+    "color": "#009688",
+    "type": "TaskType",
+    "for_shots": true
+  },
+  "updated_at": "2020-04-21T13:14:34",
+  "priority": 0,
+  "entity": {
+    "description": null,
+    "updated_at": "2020-04-30T10:01:00",
+    "entity_type_id": "e10f0586-ad84-4fc7-83c4-0df53e683f1b",
+    "created_at": "2020-04-08T15:31:31",
+    "canceled": false,
+    "data": {
+      "fps": "24",
+      "frame_out": "20",
+      "frame_in": "1"
+    },
+    "nb_frames": 20,
+    "code": null,
+    "preview_file_id": null,
+    "shotgun_id": null,
+    "project_id": "665ce354-8e1f-41b5-9c47-16132aa98bc7",
+    "type": "Entity",
+    "parent_id": "3898ecf7-5229-4324-8779-45afdae5b2da",
+    "id": "e3614442-0f75-419d-97a3-5379f58e6f0b",
+    "name": "01",
+    "source_id": null
+  },
+  "estimation": 0,
+  "retake_count": 0,
+  "id": "f52dcd35-43a1-42dd-9d91-7d29c0be0219",
+  "task_type_id": "f6261d47-9c48-4b1a-b301-8a65afaa3023",
+  "entity_id": "e3614442-0f75-419d-97a3-5379f58e6f0b",
+  "type": "Task",
+  "task_status_id": "d330fbea-6ac9-4927-b1cb-261ac390493b",
+  "due_date": null,
+  "task_status": {
+    "short_name": "todo",
+    "updated_at": "2020-04-07T10:39:05",
+    "is_artist_allowed": true,
+    "created_at": "2020-04-07T10:39:05",
+    "is_reviewable": true,
+    "name": "Todo",
+    "shotgun_id": null,
+    "is_retake": false,
+    "id": "d330fbea-6ac9-4927-b1cb-261ac390493b",
+    "color": "#f5f5f5",
+    "type": "TaskStatus",
+    "is_client_allowed": true,
+    "is_done": false
+  }
+}
