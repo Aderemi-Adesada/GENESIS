@@ -11,47 +11,67 @@ project_id = '665ce354-8e1f-41b5-9c47-16132aa98bc7'
 cast_data = []
 shot_data = []
 # print(gazu.shot.get_shot(shots[0]['id']))
-shots = gazu.shot.all_shots_for_project(project_id)
-a = gazu.asset.all_assets_for_project(project_id)
-
-# print(gazu.task.all_tasks_for_shot(shots[0])[0])
+# a = gazu.asset.all_assets_for_project(project_id)
+#
+# shots = gazu.shot.all_shots_for_project(project_id)
+# print(gazu.task.all_tasks_for_shot(shots[0]))
 # print('##########################################################################################################')
 # test_task = gazu.task.get_task('f52dcd35-43a1-42dd-9d91-7d29c0be0219')
 # with open('tests.json', 'w') as test:
 #     json.dump(test_task, test, indent=2)
-kitsu_task_types = gazu.task.all_task_types()
-for kitsu_task_type in kitsu_task_types:
-    print(kitsu_task_type['name'])
-directory= []
+
+# with open('file_tree.json') as data:
+#     tree = json.load(data)
+# gazu.files.update_project_file_tree(project_id,tree)
+# gazu.files.
+# test_build = gazu.files.build_working_file_path('f52dcd35-43a1-42dd-9d91-7d29c0be0219')
+# print(test_build)
+
+
 ####################################################################################################
-# for shot in shots:
-#     shot_tasks = gazu.task.all_tasks_for_shot(shot)
-#     for shot_task in shot_tasks:
-#         task = gazu.task.get_task(shot_task['id'])
-#         task_type_name = task["task_type"]["name"]
-#         project_shot_tasks = ['anim', 'layout', 'lighting']
-#         task_dir = None
-#         for project_shot_task in project_shot_tasks:
-#             if task_type_name == project_shot_task:
-#                 task_dir = gazu.files.build_working_file_path(shot_task) + '/' + project_shot_task + '.blend'
-#             else:
-#                 task_dir = gazu.files.build_working_file_path(shot_task)
-#         assignees = []
-#         for user in task['assignees']:
-#             assignee = gazu.person.get_person(user)
-#             assignee_info = {'full_name': assignee['full_name'], 'id': assignee['id'], 'role': assignee['role']}
-#             assignees.append(assignee_info)
-#
-#         get_assignees = gazu.person.get_person("15b9dbfc-b47d-403b-827b-beaaaf3e52f6")
-#         task_info = {'task_id': task['id'], 'dir': task_dir, 'assignees': assignees}
-#         # if shot_dir not in directory:
-#         directory.append(task_info)
-# with open('directories.json', 'w') as data:
-#     json.dump(directory, data, indent=2)
+# todo
+directory= []
+shots = gazu.shot.all_shots_for_project(project_id)
+kitsu_task_types = gazu.task.all_task_types()
+for shot in shots:
+    shot_tasks = gazu.task.all_tasks_for_shot(shot)
+    for shot_task in shot_tasks:
+        kitsu_working_path = gazu.files.build_working_file_path(shot_task)
+        task = gazu.task.get_task(shot_task['id'])
+        task_type_name = task["task_type"]["name"]
+        task_dir = None
+        svn_dir = None
+        assignees = []
+
+        for user in task['assignees']:
+            assignee = gazu.person.get_person(user)
+            assignee_info = {'full_name': assignee['full_name'], 'id': assignee['id'], 'role': assignee['role']}
+            assignees.append(assignee_info)
+
+        for kitsu_task_type in kitsu_task_types:
+            def task_info_gen():
+                task_dir_split = task_dir.split('/', 3)
+                svn_dir = f"{task_dir_split[2]}:/{task_dir_split[3]}"
+                task_info = {'task_id': task['id'], 'dir': task_dir, 'svn_dir': svn_dir, 'assignees': assignees}
+                directory.append(task_info)
+            if task_type_name == 'anim':
+                task_dir = f"{kitsu_working_path}_anim.blend"
+                task_info_gen()
+            elif task_type_name == 'layout' or 'previz':
+                task_dir = f"{kitsu_working_path}_layout.blend"
+                task_info_gen()
+            elif task_type_name == 'lighting' or 'rendering' or 'comp':
+                task_dir = f"{kitsu_working_path}_lighting.blend"
+                task_info_gen()
+            else:
+                task_info = {'task_id': task['id'], 'dir': '', 'assignees': assignees}
+                directory.append(task_info)
+with open('directories.json', 'w') as data:
+    json.dump(directory, data, indent=2)
 ################################################################################################
 
 
-# print(e[0]['id'])
+#print(e[0]['id'])
 # for i in b:
 #     print(i['id'] + '  ' + i['entity_type_name'] + '   ' + i['task_type_name'] + '    ' + i['entity_name'])
 

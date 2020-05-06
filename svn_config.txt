@@ -1,0 +1,35 @@
+[tao:/scenes/01/01/01_01_anim.blend]
+taiwo folu = rw
+
+[tao:/scenes/01/01/01_01_layout.blend]
+excellent mola = rw
+aderemi adesada = rw
+
+[tao:/scenes/03/01/03_01_anim.blend]
+taiwo folu = rw
+
+[tao:/scenes/03/01/03_01_layout.blend]
+excellent mola = rw
+aderemi adesada = rw
+
+[tao:/scenes/02/01/02_01_anim.blend]
+aderemi adesada = rw
+
+[tao:/scenes/02/01/02_01_layout.blend]
+excellent mola = rw
+aderemi adesada = rw
+
+[tao:/scenes/01/02/01_02_anim.blend]
+excellent mola = rw
+
+[tao:/scenes/01/02/01_02_layout.blend]
+taiwo folu = rw
+aderemi adesada = rw
+
+[tao:/scenes/02/02/02_02_layout.blend]
+taiwo folu = rw
+excellent mola = rw
+
+[tao:/scenes/03/02/03_02_layout.blend]
+excellent mola = rw
+
