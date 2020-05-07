@@ -13,7 +13,7 @@ shot_data = []
 # print(gazu.shot.get_shot(shots[0]['id']))
 # a = gazu.asset.all_assets_for_project(project_id)
 #
-# shots = gazu.shot.all_shots_for_project(project_id)
+shots = gazu.shot.all_shots_for_project(project_id)
 # print(gazu.task.all_tasks_for_shot(shots[0]))
 # print('##########################################################################################################')
 # test_task = gazu.task.get_task('f52dcd35-43a1-42dd-9d91-7d29c0be0219')
@@ -24,17 +24,92 @@ shot_data = []
 #     tree = json.load(data)
 # gazu.files.update_project_file_tree(project_id,tree)
 # gazu.files.
-# test_build = gazu.files.build_working_file_path('f52dcd35-43a1-42dd-9d91-7d29c0be0219')
+# test_build = gazu.files.build_working_file_path()
 # print(test_build)
+# c = gazu.task.all_tasks_for_asset('7e9397c0-ca1c-4d0e-8dec-a69c9090710f')
+# for i in c:
+#     test_build = gazu.files.build_working_file_path(i['id'])
+#     print(i['task_type_name'])
+#     print(test_build)
+# print(c)
+# x = gazu.casting.get_shot_casting(shots)
+# for shot in shots:
+#     casts = gazu.casting.get_shot_casting(shot)
+#     for cast in casts:
+#         cast_tasks = gazu.task.all_tasks_for_asset(cast['asset_id'])
+#         for task in cast_tasks:
+#             test_build = gazu.files.build_working_file_path(task['id'])
+#             path_split = test_build.split('/', 3)
+#             svn_dir = f"{path_split[2]}:/{path_split[3]}.blend"
+#             print(test_build)
+#             print(svn_dir)
+#             break
+#     break
 
+    # for cast in casts:
+    #
+# print(x)
 
 ####################################################################################################
 # todo
 directory= []
 shots = gazu.shot.all_shots_for_project(project_id)
+assets = gazu.asset.all_assets_for_project(project_id)
 kitsu_task_types = gazu.task.all_task_types()
+
+for asset in assets:
+    dependencies = []
+    asset_tasks = gazu.task.all_tasks_for_asset(asset)
+    casts = gazu.casting.get_asset_casting(asset)
+
+    for cast in casts:
+        cast_tasks = gazu.task.all_tasks_for_asset(cast['asset_id'])
+        for task in cast_tasks:
+            cast_dir = gazu.files.build_working_file_path(task['id'])
+            path_split = cast_dir.split('/', 3)
+            svn_dir = f"{path_split[2]}:/{path_split[3]}.blend"
+            cast_task_info = {'name': task['entity_name'], 'id': task['id'], 'dir': cast_dir, 'svn_dir': svn_dir}
+            dependencies.append(cast_task_info)
+            break
+
+    for asset_task in asset_tasks:
+        kitsu_working_path = gazu.files.build_working_file_path(asset_task)
+        task = gazu.task.get_task(asset_task['id'])
+        task_type_name = task["task_type"]["name"]
+        task_dir = None
+        svn_dir = None
+        assignees = []
+
+        for user in task['assignees']:
+            assignee = gazu.person.get_person(user)
+            assignee_info = {'full_name': assignee['full_name'], 'id': assignee['id'], 'role': assignee['role']}
+            assignees.append(assignee_info)
+
+        if task_type_name == 'Concept':
+            pass
+        else:
+            task_dir = f"{kitsu_working_path}.blend"
+            task_dir_split = task_dir.split('/', 3)
+            svn_dir = f"{task_dir_split[2]}:/{task_dir_split[3]}"
+            task_info = {'task_id': task['id'], 'task_type': task_type_name, 'dir': task_dir, 'svn_dir': svn_dir,
+                         'assignees': assignees, 'dependencies': dependencies}
+            directory.append(task_info)
+
 for shot in shots:
+    dependencies = []
     shot_tasks = gazu.task.all_tasks_for_shot(shot)
+    casts = gazu.casting.get_shot_casting(shot)
+
+    for cast in casts:
+        cast_tasks = gazu.task.all_tasks_for_asset(cast['asset_id'])
+        for task in cast_tasks:
+            cast_dir = gazu.files.build_working_file_path(task['id'])
+            path_split = cast_dir.split('/', 3)
+            svn_dir = f"{path_split[2]}:/{path_split[3]}.blend"
+            cast_task_info = {'name': task['entity_name'], 'id': task['id'], 'dir': cast_dir, 'svn_dir': svn_dir}
+            dependencies.append(cast_task_info)
+            break
+
     for shot_task in shot_tasks:
         kitsu_working_path = gazu.files.build_working_file_path(shot_task)
         task = gazu.task.get_task(shot_task['id'])
@@ -52,7 +127,7 @@ for shot in shots:
             def task_info_gen():
                 task_dir_split = task_dir.split('/', 3)
                 svn_dir = f"{task_dir_split[2]}:/{task_dir_split[3]}"
-                task_info = {'task_id': task['id'], 'dir': task_dir, 'svn_dir': svn_dir, 'assignees': assignees}
+                task_info = {'task_id': task['id'], 'task_type': task_type_name, 'dir': task_dir, 'svn_dir': svn_dir, 'assignees': assignees, 'dependencies': dependencies}
                 directory.append(task_info)
             if task_type_name == 'anim':
                 task_dir = f"{kitsu_working_path}_anim.blend"
@@ -64,7 +139,7 @@ for shot in shots:
                 task_dir = f"{kitsu_working_path}_lighting.blend"
                 task_info_gen()
             else:
-                task_info = {'task_id': task['id'], 'dir': '', 'assignees': assignees}
+                task_info = {'task_id': task['id'], 'task_type': task_type_name, 'dir': '', 'assignees': assignees, 'dependencies': dependencies}
                 directory.append(task_info)
 with open('directories.json', 'w') as data:
     json.dump(directory, data, indent=2)

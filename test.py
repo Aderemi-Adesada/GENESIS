@@ -27,6 +27,13 @@ for task_info in task_infos:
             config[task_info['svn_dir']] = {
                 assignee['full_name']: 'rw'
             }
+
+for task_info in task_infos:
+    assignees = task_info['assignees']
+    for dependency in task_info['dependencies']:
+        if dependency['svn_dir'] in config:
+            config.set(dependency['svn_dir'], assignee['full_name'], 'r')
+
 with open('svn_config.txt', 'w') as f:
     config.write(f)
 ######################################################################
