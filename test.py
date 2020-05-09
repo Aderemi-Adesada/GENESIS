@@ -60,6 +60,8 @@ with open('svn_config.txt', 'w') as f:
 #     'images_path': '/my_app/images'
 # }
 #
+
+
 # with open('svn_config.txt', 'w') as f:
 #     config.write(f)
 
