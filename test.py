@@ -4,19 +4,15 @@ import shutil
 import ctypes
 import json
 from configparser import ConfigParser
-iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
 
-# gazu.set_host('https://eaxum.cg-wire.com/api')
-# gazu.log_in('aderemi@eaxum.com', 'efosadiya')
-# project = gazu.project.get_project_by_name('tao')
-# project_id = '665ce354-8e1f-41b5-9c47-16132aa98bc7'
 ############################################################
-with open('directories.json', 'r') as data:
+with open('project_tasks_info.json', 'r') as data:
     task_infos = json.load(data)
 print(task_infos[0])
 config = ConfigParser()
 
-for task_info in task_infos:
+
+def set_write_permissions(task_info):
     if task_info['svn_dir'] in config:
         assignees = task_info['assignees']
         for assignee in assignees:
@@ -28,11 +24,21 @@ for task_info in task_infos:
                 assignee['full_name']: 'rw'
             }
 
-for task_info in task_infos:
+
+def set_read_permission(task_info):
     assignees = task_info['assignees']
     for dependency in task_info['dependencies']:
         if dependency['svn_dir'] in config:
-            config.set(dependency['svn_dir'], assignee['full_name'], 'r')
+            for assignee in assignees:
+                config.set(dependency['svn_dir'], assignee['full_name'], 'r')
+
+
+
+for task_info in task_infos:
+    set_write_permissions(task_info)
+
+# for task_info in task_infos:
+#     set_read_permission(task_info)
 
 with open('svn_config.txt', 'w') as f:
     config.write(f)
