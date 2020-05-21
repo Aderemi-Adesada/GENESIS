@@ -1,14 +1,7 @@
 [
   {
-    "filepath": "C:/Users/Aderemi/projects/tao/lib/chars/suzanne.blend",
-    "filename": "suzanne"
-  },
-  {
-    "filepath": "C:/Users/Aderemi/projects/tao/lib/envs/cube.blend",
-    "filename": "cube"
-  },
-  {
-    "filepath": "C:/Users/Aderemi/projects/tao/lib/props/torus.blend",
-    "filename": "torus"
+    "fps": "24",
+    "frame_in": "321",
+    "frame_out": "350"
   }
 ]

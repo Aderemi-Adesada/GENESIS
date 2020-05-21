@@ -8,6 +8,8 @@ gazu.set_host('https://eaxum.cg-wire.com/api')
 gazu.log_in('aderemi@eaxum.com', 'efosadiya')
 project = gazu.project.get_project_by_name('tao')
 project_id = '665ce354-8e1f-41b5-9c47-16132aa98bc7'
+blender = "C:/Program Files/Blender Foundation/Blender 2.82/blender.exe"
+host = 'https://eaxum.cg-wire.com/api'
 
 # print(gazu.shot.get_shot(shots[0]['id']))
 # a = gazu.asset.all_assets_for_project(project_id)
@@ -23,7 +25,7 @@ project_id = '665ce354-8e1f-41b5-9c47-16132aa98bc7'
 # todo
 
 
-def create_svn_config(json_data):
+def create_svn_config(json_data, project_name):
     with open(json_data, 'r') as data:
         task_infos = json.load(data)
     print(task_infos[0])
@@ -58,7 +60,7 @@ def create_svn_config(json_data):
     for task_info in task_infos:
         set_read_permission(task_info)
 
-    with open(f'{json_data}_svn_config.txt', 'w') as f:
+    with open(f'{project_name}_svn_config.txt', 'w') as f:
         config.write(f)
 
 
@@ -156,6 +158,7 @@ def project_task_info_gen(project_name):
         json.dump(project_tasks_info, data, indent=2)
 
 
+
 def project_files_gen(username, password, project_name, blender, gazu_host):
     gazu.set_host(gazu_host)
     gazu.log_in(username, password)
@@ -217,7 +220,7 @@ def project_files_gen(username, password, project_name, blender, gazu_host):
             char_file = chars_path + '/' + char_name + '.blend'
             shutil.copy('./genesis.blend', chars_path)
             os.rename(chars_path + '/genesis.blend', char_file)
-            ctypes.windll.shell32.ShellExecuteW(None, "open", blender, f' -b "{char_file}" --python "./setup.py"', None, 1)
+            ctypes.windll.shell32.ShellExecuteW(None, "open", blender, f' -b --factory-startup "{char_file}" --python "./setup.py"', None, 1)
             while os.path.isfile(char_file + '1') == False:
                 pass
             os.remove(char_file + '1')
@@ -228,7 +231,7 @@ def project_files_gen(username, password, project_name, blender, gazu_host):
             env_file = envs_path + '/' + env_name + '.blend'
             shutil.copy('./genesis.blend', envs_path)
             os.rename(envs_path + '/genesis.blend', env_file)
-            ctypes.windll.shell32.ShellExecuteW(None, "open", blender, f' -b "{env_file}" --python "./setup.py"', None, 1)
+            ctypes.windll.shell32.ShellExecuteW(None, "open", blender, f' -b --factory-startup "{env_file}" --python "./setup.py"', None, 1)
             while os.path.isfile(env_file + '1') == False:
                 pass
             os.remove(env_file + '1')
@@ -239,7 +242,7 @@ def project_files_gen(username, password, project_name, blender, gazu_host):
             prop_file = props_path + '/' + prop_name + '.blend'
             shutil.copy('./genesis.blend', props_path)
             os.rename(props_path + '/genesis.blend', prop_file)
-            ctypes.windll.shell32.ShellExecuteW(None, "open", blender, f' -b "{prop_file}" --python "./setup.py"', None, 1)
+            ctypes.windll.shell32.ShellExecuteW(None, "open", blender, f' -b --factory-startup "{prop_file}" --python "./setup.py"', None, 1)
             while os.path.isfile(prop_file + '1') == False:
                 pass
             os.remove(prop_file + '1')
@@ -279,15 +282,18 @@ def project_files_gen(username, password, project_name, blender, gazu_host):
                             cast_data.append({'filepath': props_path + cast['asset_name'] + '.blend', 'filename': cast['asset_name']})
                     with open('cast_data.json', 'w') as data:
                         json.dump(cast_data, data, indent=2)
-                    ctypes.windll.shell32.ShellExecuteW(None, "open", blender, f'-b "{shot_file_name_task}" --python "./scenes_setup.py"', None, 1)
+                    ctypes.windll.shell32.ShellExecuteW(None, "open", blender, f'-b --factory-startup "{shot_file_name_task}" --python "./scenes_setup.py"', None, 1)
                     # ctypes.windll.shell32.ShellExecuteW(None, "open", blender,
                     #                                     f' -b "{shot_file_name_task}" --python "./scenes_setup.py"', None, 1)
                     while os.path.isfile(shot_file_name_task + '1') == False:
                         pass
                     os.remove(shot_file_name_task + '1')
+    project_task_info_gen(project_name)
+    create_svn_config(f'{project_name}_tasks_info.json', project_name)
 
+project_files_gen(username='aderemi@eaxum.com', password='efosadiya', project_name='tao', blender=blender, gazu_host=host)
 
-project_task_info_gen('tao')
+# project_task_info_gen('tao')
 # project_files_gen(username=email, password=password, gazu_host=gazu_host_url, blender=blender, project_name='tao')
 # for s in gazu.asset.all_asset_types():
 #     print(s['name'] + '  ' + s['id'])
