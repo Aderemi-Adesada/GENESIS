@@ -1,0 +1,8 @@
+<RCC>
+  <qresource prefix="img">
+    <file>login.png</file>
+    <file>eaxum_logo_capsule.png</file>
+    <file>login.png</file>
+    <file>background_1.png</file>
+  </qresource>
+</RCC>

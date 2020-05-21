@@ -4,12 +4,22 @@ import shutil
 import ctypes
 import json
 from configparser import ConfigParser
-gazu.set_host('https://eaxum.cg-wire.com/api')
-gazu.log_in('aderemi@eaxum.com', 'efosadiya')
-project = gazu.project.get_project_by_name('tao')
-project_id = '665ce354-8e1f-41b5-9c47-16132aa98bc7'
-blender = "C:/Program Files/Blender Foundation/Blender 2.82/blender.exe"
-host = 'https://eaxum.cg-wire.com/api'
+
+
+import sys
+from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5 import QtCore, QtWidgets
+from PyQt5.uic import loadUi
+
+
+
+# gazu.set_host('https://eaxum.cg-wire.com/api')
+# gazu.log_in('aderemi@eaxum.com', 'efosadiya')
+# project = gazu.project.get_project_by_name('tao')
+# project_id = '665ce354-8e1f-41b5-9c47-16132aa98bc7'
+# blender = "C:/Program Files/Blender Foundation/Blender 2.82/blender.exe"
+# host = 'https://eaxum.cg-wire.com/api'
 
 # print(gazu.shot.get_shot(shots[0]['id']))
 # a = gazu.asset.all_assets_for_project(project_id)
@@ -23,6 +33,9 @@ host = 'https://eaxum.cg-wire.com/api'
 
 ####################################################################################################
 # todo
+
+
+
 
 
 def create_svn_config(json_data, project_name):
@@ -158,7 +171,6 @@ def project_task_info_gen(project_name):
         json.dump(project_tasks_info, data, indent=2)
 
 
-
 def project_files_gen(username, password, project_name, blender, gazu_host):
     gazu.set_host(gazu_host)
     gazu.log_in(username, password)
@@ -291,7 +303,9 @@ def project_files_gen(username, password, project_name, blender, gazu_host):
     project_task_info_gen(project_name)
     create_svn_config(f'{project_name}_tasks_info.json', project_name)
 
-project_files_gen(username='aderemi@eaxum.com', password='efosadiya', project_name='tao', blender=blender, gazu_host=host)
+
+
+# project_files_gen(username='aderemi@eaxum.com', password='efosadiya', project_name='tao', blender=blender, gazu_host=host)
 
 # project_task_info_gen('tao')
 # project_files_gen(username=email, password=password, gazu_host=gazu_host_url, blender=blender, project_name='tao')
