@@ -14,12 +14,19 @@ from PyQt5.uic import loadUi
 
 
 
-# gazu.set_host('https://eaxum.cg-wire.com/api')
-# gazu.log_in('aderemi@eaxum.com', 'efosadiya')
-# project = gazu.project.get_project_by_name('tao')
+gazu.set_host('https://eaxum.cg-wire.com/api')
+gazu.log_in('aderemi@eaxum.com', 'efosadiya')
+project = gazu.project.get_project_by_name('tao')
 # project_id = '665ce354-8e1f-41b5-9c47-16132aa98bc7'
 # blender = "C:/Program Files/Blender Foundation/Blender 2.82/blender.exe"
 # host = 'https://eaxum.cg-wire.com/api'
+
+
+a = gazu.project.all_open_projects()
+# print(a)
+for i in a:
+    print(i['name'])
+
 
 # print(gazu.shot.get_shot(shots[0]['id']))
 # a = gazu.asset.all_assets_for_project(project_id)
