@@ -10,6 +10,8 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         loadUi('genesis.ui', self)
+        self.project_button.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(0))
+        self.settings_button.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(1))
 
 
 class LoginWindow(QMainWindow):

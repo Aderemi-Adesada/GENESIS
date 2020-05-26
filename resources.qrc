@@ -167,4 +167,7 @@
     <file>icons/24x24/cil-zoom-in.png</file>
     <file>icons/24x24/cil-zoom-out.png</file>
   </qresource>
+  <qresource prefix="img">
+    <file>img/bg_1.png</file>
+  </qresource>
 </RCC>
