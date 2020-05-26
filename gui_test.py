@@ -24,9 +24,12 @@ class LoginWindow(QMainWindow):
 
     def login(self):
         try:
-            host = self.host_url.text()
-            username = self.username_input.text()
-            password = self.password_input.text()
+            host = 'https://eaxum.cg-wire.com/api'
+            username = 'aderemi@eaxum.com'
+            password = 'efosadiya'
+            # host = self.host_url.text()
+            # username = self.username_input.text()
+            # password = self.password_input.text()
             gazu.set_host(host)
             gazu.log_in(username, password)
             self.switch_window.emit()
