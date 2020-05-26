@@ -18,14 +18,14 @@ gazu.set_host('https://eaxum.cg-wire.com/api')
 gazu.log_in('aderemi@eaxum.com', 'efosadiya')
 project = gazu.project.get_project_by_name('tao')
 # project_id = '665ce354-8e1f-41b5-9c47-16132aa98bc7'
-# blender = "C:/Program Files/Blender Foundation/Blender 2.82/blender.exe"
+blender = "C:/Program Files/Blender Foundation/Blender 2.82/blender.exe"
 # host = 'https://eaxum.cg-wire.com/api'
 
 
-a = gazu.project.all_open_projects()
-# print(a)
-for i in a:
-    print(i['name'])
+# a = gazu.project.all_open_projects()
+# # print(a)
+# for i in a:
+#     print(i['name'])
 
 
 # print(gazu.shot.get_shot(shots[0]['id']))
@@ -43,7 +43,10 @@ for i in a:
 
 
 
-
+def test():
+    a = gazu.project.all_open_projects()
+    for i in a:
+        print(i['name'])
 
 def create_svn_config(json_data, project_name):
     with open(json_data, 'r') as data:
@@ -178,9 +181,7 @@ def project_task_info_gen(project_name):
         json.dump(project_tasks_info, data, indent=2)
 
 
-def project_files_gen(username, password, project_name, blender, gazu_host):
-    gazu.set_host(gazu_host)
-    gazu.log_in(username, password)
+def project_files_gen(project_name, blender):
     project = gazu.project.get_project_by_name(project_name)
     project_id = project['id']
 
@@ -307,10 +308,12 @@ def project_files_gen(username, password, project_name, blender, gazu_host):
                     while os.path.isfile(shot_file_name_task + '1') == False:
                         pass
                     os.remove(shot_file_name_task + '1')
-    project_task_info_gen(project_name)
-    create_svn_config(f'{project_name}_tasks_info.json', project_name)
+
+# project_task_info_gen(project_name)
+# create_svn_config(f'{project_name}_tasks_info.json', project_name)
 
 
+project_files_gen('tao', blender)
 
 # project_files_gen(username='aderemi@eaxum.com', password='efosadiya', project_name='tao', blender=blender, gazu_host=host)
 

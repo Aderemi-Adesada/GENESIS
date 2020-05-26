@@ -3,8 +3,9 @@ from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 from PyQt5.uic import loadUi
 from PyQt5 import QtCore, QtWidgets
-# from genesis import
+from genesis import project_files_gen
 import gazu
+import resources
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -12,7 +13,24 @@ class MainWindow(QMainWindow):
         loadUi('genesis.ui', self)
         self.project_button.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(0))
         self.settings_button.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(1))
+        self.project_list()
 
+        print(str(self.project_select.currentText()))
+        # print(blender)
+        self.gen_project_files.clicked.connect(self.gen)
+
+    def project_list(self):
+        all_open_projects = gazu.project.all_open_projects()
+        self.project_select.clear()
+        for project in all_open_projects:
+            self.project_select.addItem(project['name'])
+
+    def gen(self):
+        blender = "C:/Program Files/Blender Foundation/Blender 2.82/blender.exe"
+        name = str(self.project_select.currentText())
+        # print(name)
+        # print(type(name))
+        project_files_gen(name, blender)
 
 class LoginWindow(QMainWindow):
     switch_window = QtCore.pyqtSignal()
