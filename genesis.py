@@ -5,42 +5,27 @@ import ctypes
 import json
 from configparser import ConfigParser
 
-
-import sys
-from PyQt5.QtCore import pyqtSlot
-from PyQt5.QtWidgets import QApplication, QMainWindow
-from PyQt5 import QtCore, QtWidgets
-from PyQt5.uic import loadUi
-
-
-
 gazu.set_host('https://eaxum.cg-wire.com/api')
 gazu.log_in('aderemi@eaxum.com', 'efosadiya')
-project = gazu.project.get_project_by_name('tao')
+# project = gazu.project.get_project_by_name('tao')
 # project_id = '665ce354-8e1f-41b5-9c47-16132aa98bc7'
-blender = "C:/Program Files/Blender Foundation/Blender 2.82/blender.exe"
-# host = 'https://eaxum.cg-wire.com/api'
+# blender = "C:/Program Files/Blender Foundation/Blender 2.82/blender.exe"
 
-
-# a = gazu.project.all_open_projects()
-# # print(a)
-# for i in a:
-#     print(i['name'])
-
-
-# print(gazu.shot.get_shot(shots[0]['id']))
-# a = gazu.asset.all_assets_for_project(project_id)
-#
-# shots = gazu.shot.all_shots_for_project(project_id)
-# print(gazu.task.all_tasks_for_shot(shots[0]))
-# print('##########################################################################################################')
-# test_task = gazu.task.get_task('f52dcd35-43a1-42dd-9d91-7d29c0be0219')
-# with open('tests.json', 'w') as test:
-#     json.dump(test_task, test, indent=2)
 
 ####################################################################################################
 # todo
 
+
+def asset_gen(asset, asset_path):
+    asset_name = asset['name']
+    asset_file = asset_path + '/' + asset_name + '.blend'
+    shutil.copy('./genesis.blend', asset_path)
+    os.rename(asset_path + '/genesis.blend', asset_file)
+    ctypes.windll.shell32.ShellExecuteW(None, "open", blender,
+                                        f' -b --factory-startup "{asset_file}" --python "./setup.py"', None, 1)
+    while os.path.isfile(asset_file + '1') == False:
+        pass
+    os.remove(asset_file + '1')
 
 
 def test():
@@ -88,11 +73,14 @@ def create_svn_config(json_data, project_name):
 
 
 def project_task_info_gen(project_name):
+    project = gazu.project.get_project_by_name(project_name)
+    project_id = project['id']
     shots = gazu.shot.all_shots_for_project(project_id)
     assets = gazu.asset.all_assets_for_project(project_id)
     kitsu_task_types = gazu.task.all_task_types()
     project_tasks_info = []
 
+    # generates dependency info of tasks
     def dependencies_cast(cast, dependency_list_output):
         cast_tasks = gazu.task.all_tasks_for_asset(cast['asset_id'])
         for task in cast_tasks:
@@ -151,7 +139,6 @@ def project_task_info_gen(project_name):
         for cast in casts:
             dependencies_cast(cast, dependencies)
 
-
         for asset_task in asset_tasks:
             kitsu_working_path = gazu.files.build_working_file_path(asset_task)
             task = gazu.task.get_task(asset_task['id'])
@@ -181,7 +168,9 @@ def project_task_info_gen(project_name):
         json.dump(project_tasks_info, data, indent=2)
 
 
-def project_files_gen(project_name, blender):
+def project_files_gen(project_name,
+                      blender,
+                      mount_point='C:' + os.environ.get('homepath').replace("\\", "/") + '/projects/'):
     project = gazu.project.get_project_by_name(project_name)
     project_id = project['id']
 
@@ -191,20 +180,20 @@ def project_files_gen(project_name, blender):
     # creating main directories
     base_directories = ['edit', 'lib', 'refs', 'scenes', 'tools']
     lib_directories = ['chars', 'envs', 'maps', 'nodes', 'props']
-    drive = 'C:'
-    user = os.environ.get('homepath').replace("\\", "/")
-    mount_point = drive + user + '/projects/'
+    # drive = 'C:'
+    # user = os.environ.get('homepath').replace("\\", "/")
+    # mount_point = drive + user + '/projects/'
     project_path = mount_point + project_name
 
-    if os.path.isdir(mount_point) == False:
+    if not os.path.isdir(mount_point):
         # checking if mount point exist
         os.mkdir(mount_point)
 
-    if os.path.isdir(project_path) == False:
+    if not os.path.isdir(project_path):
         # checking if project path exist
         os.mkdir(project_path)
 
-        #creating base directories in the project folder
+        # creating base directories in the project folder
         for directory in base_directories:
             os.mkdir(project_path + '/' + directory)
 
@@ -212,7 +201,7 @@ def project_files_gen(project_name, blender):
         for directory in lib_directories:
             os.mkdir(project_path + '/lib/' + directory)
 
-        #creates all required assets for the project#########################################
+        # creates all required assets for the project#########################################
         project_asset_types = gazu.asset.all_asset_types_for_project(project)
 
         chars_type_id = None
@@ -235,38 +224,11 @@ def project_files_gen(project_name, blender):
         props_path = project_path + '/lib/' + 'props/'
 
         for char in chars:
-            # creating the character files
-            char_name = char['name']
-            char_file = chars_path + '/' + char_name + '.blend'
-            shutil.copy('./genesis.blend', chars_path)
-            os.rename(chars_path + '/genesis.blend', char_file)
-            ctypes.windll.shell32.ShellExecuteW(None, "open", blender, f' -b --factory-startup "{char_file}" --python "./setup.py"', None, 1)
-            while os.path.isfile(char_file + '1') == False:
-                pass
-            os.remove(char_file + '1')
-
+            asset_gen(char, chars_path)
         for env in envs:
-            # creating environment files
-            env_name = env['name']
-            env_file = envs_path + '/' + env_name + '.blend'
-            shutil.copy('./genesis.blend', envs_path)
-            os.rename(envs_path + '/genesis.blend', env_file)
-            ctypes.windll.shell32.ShellExecuteW(None, "open", blender, f' -b --factory-startup "{env_file}" --python "./setup.py"', None, 1)
-            while os.path.isfile(env_file + '1') == False:
-                pass
-            os.remove(env_file + '1')
-
+            asset_gen(env, envs_path)
         for prop in props:
-            # creating props files
-            prop_name = prop['name']
-            prop_file = props_path + '/' + prop_name + '.blend'
-            shutil.copy('./genesis.blend', props_path)
-            os.rename(props_path + '/genesis.blend', prop_file)
-            ctypes.windll.shell32.ShellExecuteW(None, "open", blender, f' -b --factory-startup "{prop_file}" --python "./setup.py"', None, 1)
-            while os.path.isfile(prop_file + '1') == False:
-                pass
-            os.remove(prop_file + '1')
-
+            asset_gen(prop, props_path)
 
         # creates scenes, shots, and shot files
         scenes = gazu.context.all_sequences_for_project(project_id)
@@ -303,28 +265,10 @@ def project_files_gen(project_name, blender):
                     with open('cast_data.json', 'w') as data:
                         json.dump(cast_data, data, indent=2)
                     ctypes.windll.shell32.ShellExecuteW(None, "open", blender, f'-b --factory-startup "{shot_file_name_task}" --python "./scenes_setup.py"', None, 1)
-                    # ctypes.windll.shell32.ShellExecuteW(None, "open", blender,
-                    #                                     f' -b "{shot_file_name_task}" --python "./scenes_setup.py"', None, 1)
                     while os.path.isfile(shot_file_name_task + '1') == False:
                         pass
                     os.remove(shot_file_name_task + '1')
 
-# project_task_info_gen(project_name)
-# create_svn_config(f'{project_name}_tasks_info.json', project_name)
 
-
+blender = "C:/Program Files/Blender Foundation/Blender 2.82/blender.exe"
 project_files_gen('tao', blender)
-
-# project_files_gen(username='aderemi@eaxum.com', password='efosadiya', project_name='tao', blender=blender, gazu_host=host)
-
-# project_task_info_gen('tao')
-# project_files_gen(username=email, password=password, gazu_host=gazu_host_url, blender=blender, project_name='tao')
-# for s in gazu.asset.all_asset_types():
-#     print(s['name'] + '  ' + s['id'])
-# print(environments)
-    # collection = bpy.data.collections.new("MyTestCollection")
-    # bpy.context.scene.collection.children.link(collection)
-    #  bpy.path.basename(bpy.context.blend_data.filepath)
-
-        
-
