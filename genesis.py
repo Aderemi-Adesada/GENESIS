@@ -14,9 +14,73 @@ gazu.log_in('aderemi@eaxum.com', 'efosadiya')
 
 ####################################################################################################
 # todo
+def folder_structure(mount_point, project_name):
+    project_path = mount_point + project_name
+    base_directories = ['edit', 'lib', 'refs', 'scenes', 'tools']
+    lib_directories = ['chars', 'envs', 'maps', 'nodes', 'props']
+    # checking if mount point exist
+    if not os.path.isdir(mount_point):
+        os.mkdir(mount_point)
+    # checking if project path exist
+    if not os.path.isdir(project_path):
+        os.mkdir(project_path)
+        # creating base directories in the project folder
+    for directory in base_directories:
+        os.mkdir(project_path + '/' + directory)
+    # creates lib sub directories
+    for directory in lib_directories:
+        os.mkdir(project_path + '/lib/' + directory)
 
 
-def asset_gen(asset, asset_path):
+def scene_files_gen(scene, project_path, blender):
+    chars_path = project_path + '/lib/' + 'chars/'
+    envs_path = project_path + '/lib/' + 'envs/'
+    props_path = project_path + '/lib/' + 'props/'
+    shot_data = []
+    cast_data = []
+    scene_name = scene['name']
+    scene_id = scene['id']
+    scene_shots = gazu.context.all_shots_for_sequence(scene_id)
+    os.mkdir(project_path + '/scenes/' + scene_name)
+    for shot in scene_shots:
+        shot_data.clear()
+        shot_data.append(shot['data'])
+        with open('shot_data.json', 'w') as s_data:
+            json.dump(shot_data, s_data, indent=2)
+        shot_name = shot['name']
+        shot_path = project_path + '/scenes/' + scene_name + '/' + shot_name
+        shot_file_tasks = ['lighting', 'anim', 'layout']
+        shot_file_name = scene_name + '_' + shot_name + '_'
+        os.mkdir(shot_path)
+        # shutil.copy('./genesis.blend', shot_path)
+
+        for shot_file_task in shot_file_tasks:
+            shutil.copy('./genesis.blend', shot_path)
+            shot_file_name_task = shot_path + '/' + shot_file_name + shot_file_task + '.blend'
+            os.rename(shot_path + '/genesis.blend', shot_file_name_task)
+            casts = gazu.casting.get_shot_casting(shot)
+            cast_data.clear()
+            for cast in casts:
+                if cast['asset_type_name'] == 'chars':
+                    cast_data.append(
+                        {'filepath': chars_path + cast['asset_name'] + '.blend', 'filename': cast['asset_name']})
+                if cast['asset_type_name'] == 'envs':
+                    cast_data.append(
+                        {'filepath': envs_path + cast['asset_name'] + '.blend', 'filename': cast['asset_name']})
+                if cast['asset_type_name'] == 'props':
+                    cast_data.append(
+                        {'filepath': props_path + cast['asset_name'] + '.blend', 'filename': cast['asset_name']})
+            with open('cast_data.json', 'w') as data:
+                json.dump(cast_data, data, indent=2)
+            ctypes.windll.shell32.ShellExecuteW(None, "open", blender,
+                                                f'-b --factory-startup "{shot_file_name_task}" --python "./scenes_setup.py"',
+                                                None, 1)
+            while os.path.isfile(shot_file_name_task + '1') == False:
+                pass
+            os.remove(shot_file_name_task + '1')
+
+
+def asset_gen(asset, asset_path, blender):
     asset_name = asset['name']
     asset_file = asset_path + '/' + asset_name + '.blend'
     shutil.copy('./genesis.blend', asset_path)
@@ -27,11 +91,6 @@ def asset_gen(asset, asset_path):
         pass
     os.remove(asset_file + '1')
 
-
-def test():
-    a = gazu.project.all_open_projects()
-    for i in a:
-        print(i['name'])
 
 def create_svn_config(json_data, project_name):
     with open(json_data, 'r') as data:
@@ -168,47 +227,23 @@ def project_task_info_gen(project_name):
         json.dump(project_tasks_info, data, indent=2)
 
 
-def project_files_gen(project_name,
-                      blender,
+def project_files_gen(project_name, blender,
                       mount_point='C:' + os.environ.get('homepath').replace("\\", "/") + '/projects/'):
     project = gazu.project.get_project_by_name(project_name)
     project_id = project['id']
-
-    cast_data = []
-    shot_data = []
-
-    # creating main directories
-    base_directories = ['edit', 'lib', 'refs', 'scenes', 'tools']
-    lib_directories = ['chars', 'envs', 'maps', 'nodes', 'props']
-    # drive = 'C:'
-    # user = os.environ.get('homepath').replace("\\", "/")
-    # mount_point = drive + user + '/projects/'
     project_path = mount_point + project_name
 
     if not os.path.isdir(mount_point):
         # checking if mount point exist
         os.mkdir(mount_point)
-
     if not os.path.isdir(project_path):
-        # checking if project path exist
-        os.mkdir(project_path)
+        folder_structure(mount_point, project_name)
 
-        # creating base directories in the project folder
-        for directory in base_directories:
-            os.mkdir(project_path + '/' + directory)
-
-        # creates lib sub directories
-        for directory in lib_directories:
-            os.mkdir(project_path + '/lib/' + directory)
-
-        # creates all required assets for the project#########################################
-        project_asset_types = gazu.asset.all_asset_types_for_project(project)
-
+        asset_types = gazu.asset.all_asset_types_for_project(project)
         chars_type_id = None
         props_type_id = None
         envs_type_id = None
-
-        for asset_type in project_asset_types:
+        for asset_type in asset_types:
             if asset_type['name'] == 'chars':
                 chars_type_id = asset_type['id']
             if asset_type['name'] == 'props':
@@ -217,57 +252,25 @@ def project_files_gen(project_name,
                 envs_type_id = asset_type['id']
 
         chars = gazu.asset.all_assets_for_project_and_type(project_id, chars_type_id)
-        envs = gazu.asset.all_assets_for_project_and_type(project_id, envs_type_id)
-        props = gazu.asset.all_assets_for_project_and_type(project_id, props_type_id)
-        chars_path = project_path + '/lib/' + 'chars/'
-        envs_path = project_path + '/lib/' + 'envs/'
-        props_path = project_path + '/lib/' + 'props/'
-
         for char in chars:
-            asset_gen(char, chars_path)
+            chars_path = project_path + '/lib/' + 'chars/'
+            asset_gen(char, chars_path, blender)
+
+        envs = gazu.asset.all_assets_for_project_and_type(project_id, envs_type_id)
         for env in envs:
-            asset_gen(env, envs_path)
+            envs_path = project_path + '/lib/' + 'envs/'
+            asset_gen(env, envs_path, blender)
+
+        props = gazu.asset.all_assets_for_project_and_type(project_id, props_type_id)
         for prop in props:
-            asset_gen(prop, props_path)
+            props_path = project_path + '/lib/' + 'props/'
+            asset_gen(prop, props_path, blender)
 
         # creates scenes, shots, and shot files
         scenes = gazu.context.all_sequences_for_project(project_id)
         for scene in scenes:
-            scene_name = scene['name']
-            scene_id = scene['id']
-            scene_shots = gazu.context.all_shots_for_sequence(scene_id)
-            os.mkdir(project_path + '/scenes/' + scene_name)
-            for shot in scene_shots:
-                shot_data.clear()
-                shot_data.append(shot['data'])
-                with open('shot_data.json', 'w') as s_data:
-                    json.dump(shot_data, s_data, indent=2)
-                shot_name = shot['name']
-                shot_path = project_path + '/scenes/' + scene_name + '/' + shot_name
-                shot_file_tasks = ['lighting', 'anim', 'layout']
-                shot_file_name = scene_name + '_' + shot_name + '_'
-                os.mkdir(shot_path)
-                # shutil.copy('./genesis.blend', shot_path)
+            scene_files_gen(scene, project_path, blender)
 
-                for shot_file_task in shot_file_tasks:
-                    shutil.copy('./genesis.blend', shot_path)
-                    shot_file_name_task = shot_path + '/' + shot_file_name + shot_file_task + '.blend'
-                    os.rename(shot_path + '/genesis.blend', shot_file_name_task)
-                    casts = gazu.casting.get_shot_casting(shot)
-                    cast_data.clear()
-                    for cast in casts:
-                        if cast['asset_type_name'] == 'chars':
-                            cast_data.append({'filepath': chars_path + cast['asset_name'] + '.blend', 'filename': cast['asset_name']})
-                        if cast['asset_type_name'] == 'envs':
-                            cast_data.append({'filepath': envs_path + cast['asset_name'] + '.blend', 'filename': cast['asset_name']})
-                        if cast['asset_type_name'] == 'props':
-                            cast_data.append({'filepath': props_path + cast['asset_name'] + '.blend', 'filename': cast['asset_name']})
-                    with open('cast_data.json', 'w') as data:
-                        json.dump(cast_data, data, indent=2)
-                    ctypes.windll.shell32.ShellExecuteW(None, "open", blender, f'-b --factory-startup "{shot_file_name_task}" --python "./scenes_setup.py"', None, 1)
-                    while os.path.isfile(shot_file_name_task + '1') == False:
-                        pass
-                    os.remove(shot_file_name_task + '1')
 
 
 blender = "C:/Program Files/Blender Foundation/Blender 2.82/blender.exe"
