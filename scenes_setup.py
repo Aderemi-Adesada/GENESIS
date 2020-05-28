@@ -1,6 +1,7 @@
 import bpy
 import json
 
+
 bpy.data.collections.remove(bpy.data.collections['Collection'])
 name = bpy.path.basename(bpy.context.blend_data.filepath)
 collection = bpy.data.collections.new(name[:-6])
@@ -28,12 +29,18 @@ for i in assets:
 
 with open('shot_data.json') as s_data:
     shot_metadata = json.load(s_data)
-frame_rate = int(shot_metadata[0]['fps'])
-start_frame = int(shot_metadata[0]['frame_in'])
-end_frame = int(shot_metadata[0]['frame_out'])
+if shot_metadata[0] == None:
+    frame_rate = 24
+    start_frame = 1
+    end_frame = 100
+else:
+    frame_rate = int(shot_metadata[0]['fps'])
+    start_frame = int(shot_metadata[0]['frame_in'])
+    end_frame = int(shot_metadata[0]['frame_out'])
 
 bpy.context.scene.frame_start = start_frame
 bpy.context.scene.frame_end = end_frame
+
 
 def ffmpeg_mp4():
     bpy.context.scene.render.image_settings.file_format = 'FFMPEG'

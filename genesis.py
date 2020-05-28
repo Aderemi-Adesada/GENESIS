@@ -4,16 +4,9 @@ import shutil
 import ctypes
 import json
 from configparser import ConfigParser
-
-gazu.set_host('https://eaxum.cg-wire.com/api')
-gazu.log_in('aderemi@eaxum.com', 'efosadiya')
-# project = gazu.project.get_project_by_name('tao')
-# project_id = '665ce354-8e1f-41b5-9c47-16132aa98bc7'
-# blender = "C:/Program Files/Blender Foundation/Blender 2.82/blender.exe"
+from PyQt5.QtWidgets import QMessageBox
 
 
-####################################################################################################
-# todo
 def folder_structure(mount_point, project_name):
     project_path = mount_point + project_name
     base_directories = ['edit', 'lib', 'refs', 'scenes', 'tools']
@@ -92,12 +85,8 @@ def asset_gen(asset, asset_path, blender):
     os.remove(asset_file + '1')
 
 
-def create_svn_config(json_data, project_name):
-    with open(json_data, 'r') as data:
-        task_infos = json.load(data)
-    print(task_infos[0])
-    config = ConfigParser()
-
+def create_svn_config(project_name, json_data=None):
+    print('1')
     def set_write_permissions(task_info):
         if task_info['svn_dir'] in config:
             assignees = task_info['assignees']
@@ -121,14 +110,43 @@ def create_svn_config(json_data, project_name):
                     else:
                         config.set(dependency['svn_dir'], assignee['full_name'], 'r')
 
-    for task_info in task_infos:
-        set_write_permissions(task_info)
+    project = gazu.project.get_project_by_name(project_name)
+    project_id = project['id']
+    # with open(json_data, 'r') as data:
+    #     task_infos = json.load(data)
+    project_data = gazu.project.get_project(project_id)
+    print('2')
+    if 'data' in project_data and 'tasks_details' in project_data['data']:
+        print('3')
+        task_infos = project_data['data']['tasks_details']
+        print(task_infos)
+        config = ConfigParser()
 
-    for task_info in task_infos:
-        set_read_permission(task_info)
+        for task_info in task_infos:
+            set_write_permissions(task_info)
 
-    with open(f'{project_name}_svn_config.txt', 'w') as f:
-        config.write(f)
+        for task_info in task_infos:
+            set_read_permission(task_info)
+
+        with open(f'{project_name}_svn_config.txt', 'w') as f:
+            config.write(f)
+
+        with open(f'{project_name}_svn_config.txt') as data:
+            config_text = data.read()
+            print(config_text)
+            gazu.project.update_project_data(project_id, {'svn_access_control': config_text})
+        info = QMessageBox()
+        info.setWindowTitle('Access Control Generation')
+        info.setText('Finished')
+        info.setIcon(QMessageBox.Information)
+        info.exec_()
+    else:
+        error = QMessageBox()
+        error.setWindowTitle('Access Control Generation Error')
+        error.setText('Project task details doesnt exist, please generate tasks infos first')
+        error.setIcon(QMessageBox.Critical)
+        error.exec_()
+
 
 
 def project_task_info_gen(project_name):
@@ -199,6 +217,7 @@ def project_task_info_gen(project_name):
             dependencies_cast(cast, dependencies)
 
         for asset_task in asset_tasks:
+            print('inner')
             kitsu_working_path = gazu.files.build_working_file_path(asset_task)
             task = gazu.task.get_task(asset_task['id'])
             task_type_name = task["task_type"]["name"]
@@ -218,13 +237,30 @@ def project_task_info_gen(project_name):
                 task_info = {'task_id': task['id'], 'task_type': task_type_name, 'dir': task_dir, 'svn_dir': svn_dir,
                              'assignees': assignees, 'dependencies': dependencies}
                 info_output.append(task_info)
+    print('here')
+    try:
+        for asset in assets:
+            asset_task_info(asset, project_tasks_info)
+        for shot in shots:
+            shot_task_info(shot, project_tasks_info)
+        info = QMessageBox()
+        info.setWindowTitle('Tasks Info Generation')
+        info.setText('Finished')
+        info.setIcon(QMessageBox.Information)
+        info.exec_()
+    except gazu.exception.ParameterException as e:
+        error = QMessageBox()
+        error.setWindowTitle('Access Control Generation Error')
+        error.setText(str(e))
+        error.setIcon(QMessageBox.Critical)
+        error.exec_()
 
-    for asset in assets:
-        asset_task_info(asset, project_tasks_info)
-    for shot in shots:
-        shot_task_info(shot, project_tasks_info)
-    with open(f'{project_name}_tasks_info.json', 'w') as data:
-        json.dump(project_tasks_info, data, indent=2)
+    #todo
+    # stores infos to project details with is to much
+    # create a dedicated table for the info
+    gazu.project.update_project_data(project_id, {'tasks_details': project_tasks_info})
+    # with open(f'{project_name}_tasks_info.json', 'w') as data:
+    #     json.dump(project_tasks_info, data, indent=2)
 
 
 def project_files_gen(project_name, blender,
@@ -251,20 +287,23 @@ def project_files_gen(project_name, blender,
             if asset_type['name'] == 'envs':
                 envs_type_id = asset_type['id']
 
-        chars = gazu.asset.all_assets_for_project_and_type(project_id, chars_type_id)
-        for char in chars:
-            chars_path = project_path + '/lib/' + 'chars/'
-            asset_gen(char, chars_path, blender)
+        if chars_type_id is not None:
+            chars = gazu.asset.all_assets_for_project_and_type(project_id, chars_type_id)
+            for char in chars:
+                chars_path = project_path + '/lib/' + 'chars/'
+                asset_gen(char, chars_path, blender)
 
-        envs = gazu.asset.all_assets_for_project_and_type(project_id, envs_type_id)
-        for env in envs:
-            envs_path = project_path + '/lib/' + 'envs/'
-            asset_gen(env, envs_path, blender)
+        if envs_type_id is not None:
+            envs = gazu.asset.all_assets_for_project_and_type(project_id, envs_type_id)
+            for env in envs:
+                envs_path = project_path + '/lib/' + 'envs/'
+                asset_gen(env, envs_path, blender)
 
-        props = gazu.asset.all_assets_for_project_and_type(project_id, props_type_id)
-        for prop in props:
-            props_path = project_path + '/lib/' + 'props/'
-            asset_gen(prop, props_path, blender)
+        if props_type_id is not None:
+            props = gazu.asset.all_assets_for_project_and_type(project_id, props_type_id)
+            for prop in props:
+                props_path = project_path + '/lib/' + 'props/'
+                asset_gen(prop, props_path, blender)
 
         # creates scenes, shots, and shot files
         scenes = gazu.context.all_sequences_for_project(project_id)
@@ -272,6 +311,18 @@ def project_files_gen(project_name, blender,
             scene_files_gen(scene, project_path, blender)
 
 
-
-blender = "C:/Program Files/Blender Foundation/Blender 2.82/blender.exe"
-project_files_gen('tao', blender)
+if __name__ == '__main__':
+    gazu.set_host('https://eaxum.cg-wire.com/api')
+    gazu.log_in('aderemi@eaxum.com', 'efosadiya')
+    # project = gazu.project.get_project_by_name('tao')
+    # project_id = '665ce354-8e1f-41b5-9c47-16132aa98bc7'
+    # blender = "C:/Program Files/Blender Foundation/Blender 2.82/blender.exe"
+    blender = "C:/Program Files/Blender Foundation/Blender 2.82/blender.exe"
+    # project_files_gen('test_project', blender)
+    # project_task_info_gen('asthma')
+    print('kjhkj')
+    create_svn_config('asthma')
+    # gazu.project.update_project_data(project_id, {'svn_access_control': '1010101010101010010'})
+    # gazu.project.update_project()
+    # x = gazu.project.get_project('665ce354-8e1f-41b5-9c47-16132aa98bc7')
+    # print(x)
