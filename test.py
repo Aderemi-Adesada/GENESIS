@@ -1,10 +1,14 @@
 import os
-import gazu
-import shutil
-import ctypes
-import json
-from configparser import ConfigParser
-
+# import gazu
+# import shutil
+# import ctypes
+# import json
+# from configparser import ConfigParser
+x = os.environ.get('homepath')
+print(x)
+drive = 'C:'
+p_dir = drive + x + '/project'
+print(p_dir)
 ############################################################
 
 ######################################################################

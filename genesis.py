@@ -18,11 +18,11 @@ def folder_structure(mount_point, project_name):
     if not os.path.isdir(project_path):
         os.mkdir(project_path)
         # creating base directories in the project folder
-    for directory in base_directories:
-        os.mkdir(project_path + '/' + directory)
-    # creates lib sub directories
-    for directory in lib_directories:
-        os.mkdir(project_path + '/lib/' + directory)
+        for directory in base_directories:
+            os.mkdir(project_path + '/' + directory)
+        # creates lib sub directories
+        for directory in lib_directories:
+            os.mkdir(project_path + '/lib/' + directory)
 
 
 def scene_files_gen(scene, project_path, blender):
@@ -268,6 +268,7 @@ def project_files_gen(project_name, blender,
     project = gazu.project.get_project_by_name(project_name)
     project_id = project['id']
     project_path = mount_point + project_name
+    print(mount_point)
 
     if not os.path.isdir(mount_point):
         # checking if mount point exist
@@ -311,18 +312,49 @@ def project_files_gen(project_name, blender,
             scene_files_gen(scene, project_path, blender)
 
 
+def set_file_tree(project_name, file_tree):
+    project = gazu.project.get_project_by_name(project_name)
+    project_id = project['id']
+    gazu.files.set_project_file_tree(project_id, file_tree)
+
+
+
 if __name__ == '__main__':
+    # x = os.environ.get('homepath')
+    # print(x)
+    # drive = 'C:'
+    # p_dir = drive + x + '/projects/test/'
+    # folder_structure(p_dir, 'folder')
+    # end=0
+    # x = 'stop'
+    # while end < 5 and x == 'stop':
+    #     print(end)
+    #     print('true')
+    #     end +=1
+
+
     gazu.set_host('https://eaxum.cg-wire.com/api')
     gazu.log_in('aderemi@eaxum.com', 'efosadiya')
     # project = gazu.project.get_project_by_name('tao')
     # project_id = '665ce354-8e1f-41b5-9c47-16132aa98bc7'
     # blender = "C:/Program Files/Blender Foundation/Blender 2.82/blender.exe"
-    blender = "C:/Program Files/Blender Foundation/Blender 2.82/blender.exe"
-    # project_files_gen('test_project', blender)
-    # project_task_info_gen('asthma')
-    print('kjhkj')
-    create_svn_config('asthma')
+
+    # blender = "C:/Program Files/Blender Foundation/Blender 2.82/blender.exe"
+    # # project_files_gen('test_project', blender)
+    # project_files_gen('tao', blender)
+    # print('kjhkj')
+    # create_svn_config('asthma')
     # gazu.project.update_project_data(project_id, {'svn_access_control': '1010101010101010010'})
     # gazu.project.update_project()
     # x = gazu.project.get_project('665ce354-8e1f-41b5-9c47-16132aa98bc7')
     # print(x)
+    with open('file_tree.json', 'r') as data:
+        file_tree = data
+        # json.load(data)
+        # print(file_tree)
+    print(file_tree)
+    # set_file_tree('asthma', file_tree)
+    gazu.files.build_working_file_path()
+    gazu.files.set_project_file_tree()
+    name = gazu.project.get_project_by_name('asthma')
+    print(name)
