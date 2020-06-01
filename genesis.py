@@ -315,7 +315,8 @@ def project_files_gen(project_name, blender,
 def set_file_tree(project_name, file_tree):
     project = gazu.project.get_project_by_name(project_name)
     project_id = project['id']
-    gazu.files.set_project_file_tree(project_id, file_tree)
+    gazu.files.set_project_file_tree(project_id, 'default')
+    gazu.files.update_project_file_tree('665ce354-8e1f-41b5-9c47-16132aa98bc7', file_tree)
 
 
 
