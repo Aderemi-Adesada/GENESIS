@@ -74,7 +74,7 @@ class LoginWindow(QMainWindow):
         try:
             host = 'https://eaxum.cg-wire.com/api'
             username = 'aderemi@eaxum.com'
-            password = 'efosadiya'
+            password = 'testing'
             # host = self.host_url.text()
             # username = self.username_input.text()
             # password = self.password_input.text()

@@ -315,8 +315,8 @@ def project_files_gen(project_name, blender,
 def set_file_tree(project_name, file_tree):
     project = gazu.project.get_project_by_name(project_name)
     project_id = project['id']
-    gazu.files.set_project_file_tree(project_id, 'default')
-    gazu.files.update_project_file_tree('665ce354-8e1f-41b5-9c47-16132aa98bc7', file_tree)
+    # gazu.files.set_project_file_tree(project_id, 'default')
+    gazu.files.update_project_file_tree(project_id, file_tree)
 
 
 
@@ -335,7 +335,7 @@ if __name__ == '__main__':
 
 
     gazu.set_host('https://eaxum.cg-wire.com/api')
-    gazu.log_in('aderemi@eaxum.com', 'efosadiya')
+    gazu.log_in('aderemi@eaxum.com', 'testing')
     # project = gazu.project.get_project_by_name('tao')
     # project_id = '665ce354-8e1f-41b5-9c47-16132aa98bc7'
     # blender = "C:/Program Files/Blender Foundation/Blender 2.82/blender.exe"
@@ -350,12 +350,11 @@ if __name__ == '__main__':
     # x = gazu.project.get_project('665ce354-8e1f-41b5-9c47-16132aa98bc7')
     # print(x)
     with open('file_tree.json', 'r') as data:
-        file_tree = data
+        file_tree = json.load(data)
         # json.load(data)
         # print(file_tree)
-    print(file_tree)
-    # set_file_tree('asthma', file_tree)
-    gazu.files.build_working_file_path()
-    gazu.files.set_project_file_tree()
-    name = gazu.project.get_project_by_name('asthma')
+    # print(file_tree)
+    set_file_tree('test', file_tree)
+    # gazu.files.update_project_file_tree('b7143b90-155b-4aeb-96fe-bcaf0240b703', file_tree)
+    name = gazu.project.get_project_by_name('test')
     print(name)
