@@ -345,7 +345,7 @@ if __name__ == '__main__':
     # project_files_gen('tao', blender)
     # print('kjhkj')
     # create_svn_config('asthma')
-    # gazu.project.update_project_data(project_id, {'svn_access_control': '1010101010101010010'})
+    # gazu.project.update_project_data('665ce354-8e1f-41b5-9c47-16132aa98bc7', {'repository_url': 'http://rukia:8080/svn/tao/'})
     # gazu.project.update_project()
     # x = gazu.project.get_project('665ce354-8e1f-41b5-9c47-16132aa98bc7')
     # print(x)
@@ -354,7 +354,10 @@ if __name__ == '__main__':
         # json.load(data)
         # print(file_tree)
     # print(file_tree)
-    set_file_tree('test', file_tree)
+    set_file_tree('tao', file_tree)
     # gazu.files.update_project_file_tree('b7143b90-155b-4aeb-96fe-bcaf0240b703', file_tree)
-    name = gazu.project.get_project_by_name('test')
-    print(name)
+    name = gazu.project.get_project_by_name('tao')
+    txt = name['data']['svn_access_control']
+    # print(name['data']['svn_access_control'])
+    # with open('//rukia/projects/tao/conf/authz', 'w') as data:
+    #     data.write(txt)
