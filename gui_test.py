@@ -6,6 +6,7 @@ from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QPropertyAnimation
 from genesis import project_files_gen, project_task_info_gen, create_svn_config
 import gazu
+import json
 import resources
 
 class MainWindow(QMainWindow):
@@ -22,7 +23,7 @@ class MainWindow(QMainWindow):
         self.gen_project_files.clicked.connect(self.gen)
         self.access_control.clicked.connect(lambda: create_svn_config(str(self.project_select.currentText())))
         self.project_task_details.clicked.connect(lambda: project_task_info_gen(str(self.project_select.currentText())))
-
+        self.save_settings_button.clicked.connect(self.setings)
 
     def toggleMenu(self, maxWidth, enable):
         if enable:
@@ -59,6 +60,14 @@ class MainWindow(QMainWindow):
         # print(name)
         # print(type(name))
         project_files_gen(name, blender)
+
+    def setings(self):
+        mount_point = self.project_mounting_point_input.text()
+        svn_parent_path = self.svn_parent_path_input.text()
+        settings = {'mount point': mount_point, 'svn parent path': svn_parent_path}
+        with open('settings.json', 'w') as data:
+            json.dump(settings, data, indent=2)
+
 
 class LoginWindow(QMainWindow):
     switch_window = QtCore.pyqtSignal()

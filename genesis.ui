@@ -66,7 +66,7 @@ background: black;
 border-radius: 25px;
 }
 
-#wrapper_2{
+#settings_wrapper{
 background: black;
 border-radius: 25px;
 }
@@ -204,6 +204,7 @@ selection-background-color: rgb(26, 80, 119)
 }
 
 QLineEdit {
+	color: black;
     border: 2px solid blue;
     border-radius: 10px;
     padding: 0 8px;
@@ -515,7 +516,7 @@ font-size:20px</string>
       <item>
        <widget class="QStackedWidget" name="stackedWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="project_page">
          <layout class="QGridLayout" name="gridLayout">
@@ -692,7 +693,7 @@ font-size:20px</string>
            <number>50</number>
           </property>
           <item row="0" column="0">
-           <widget class="QFrame" name="wrapper_2">
+           <widget class="QFrame" name="settings_wrapper">
             <property name="maximumSize">
              <size>
               <width>16777215</width>
@@ -710,6 +711,40 @@ font-size:20px</string>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout">
              <item>
+              <layout class="QVBoxLayout" name="verticalLayout_5">
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_7">
+                 <item>
+                  <widget class="QLabel" name="label_6">
+                   <property name="maximumSize">
+                    <size>
+                     <width>30</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="pixmap">
+                    <pixmap resource="resources.qrc">:/icons/icons/24x24/cil-home.png</pixmap>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_7">
+                   <property name="text">
+                    <string>Blender Directory</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="svn_parent_path_input_2"/>
+               </item>
+              </layout>
+             </item>
+             <item>
               <layout class="QVBoxLayout" name="verticalLayout_2">
                <item>
                 <widget class="QLabel" name="label_4">
@@ -719,7 +754,7 @@ font-size:20px</string>
                 </widget>
                </item>
                <item>
-                <widget class="QLineEdit" name="lineEdit_2"/>
+                <widget class="QLineEdit" name="project_mounting_point_input"/>
                </item>
               </layout>
              </item>
@@ -753,7 +788,7 @@ font-size:20px</string>
                 </layout>
                </item>
                <item>
-                <widget class="QLineEdit" name="lineEdit_3"/>
+                <widget class="QLineEdit" name="svn_parent_path_input"/>
                </item>
               </layout>
              </item>
@@ -766,7 +801,7 @@ font-size:20px</string>
                 <number>0</number>
                </property>
                <item>
-                <widget class="QPushButton" name="pushButton">
+                <widget class="QPushButton" name="save_settings_button">
                  <property name="text">
                   <string>Save Settings</string>
                  </property>

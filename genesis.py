@@ -85,7 +85,7 @@ def asset_gen(asset, asset_path, blender):
     os.remove(asset_file + '1')
 
 
-def create_svn_config(project_name, json_data=None):
+def create_svn_config(project_name, svn_parent_path, json_data=None):
     print('1')
     def set_write_permissions(task_info):
         if task_info['svn_dir'] in config:
