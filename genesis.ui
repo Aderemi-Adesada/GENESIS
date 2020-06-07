@@ -726,7 +726,7 @@ font-size:20px</string>
                     <string/>
                    </property>
                    <property name="pixmap">
-                    <pixmap resource="resources.qrc">:/icons/icons/24x24/cil-home.png</pixmap>
+                    <pixmap resource="resources.qrc">:/icons/icons/24x24/cil-hand-point-right.png</pixmap>
                    </property>
                   </widget>
                  </item>
@@ -740,7 +740,7 @@ font-size:20px</string>
                 </layout>
                </item>
                <item>
-                <widget class="QLineEdit" name="svn_parent_path_input_2"/>
+                <widget class="QLineEdit" name="blender_directory_input"/>
                </item>
               </layout>
              </item>

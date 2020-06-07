@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import QMessageBox
 
 
 def folder_structure(mount_point, project_name):
-    project_path = mount_point + project_name
+    project_path = mount_point +'/'+ project_name
     base_directories = ['edit', 'lib', 'refs', 'scenes', 'tools']
     lib_directories = ['chars', 'envs', 'maps', 'nodes', 'props']
     # checking if mount point exist
@@ -128,13 +128,15 @@ def create_svn_config(project_name, svn_parent_path, json_data=None):
         for task_info in task_infos:
             set_read_permission(task_info)
 
-        with open(f'{project_name}_svn_config.txt', 'w') as f:
-            config.write(f)
+        # todo write authz file to svn server
+        with open(f'{svn_parent_path}/{project_name}/conf/authz', 'w') as file:
+            config.write(file)
 
-        with open(f'{project_name}_svn_config.txt') as data:
-            config_text = data.read()
-            print(config_text)
-            gazu.project.update_project_data(project_id, {'svn_access_control': config_text})
+        # with open(f'{svn_parent_path}/{project_name}/conf/authz') as data:
+        #     config_text = data.read()
+        #     print(config_text)
+        #     gazu.project.update_project_data(project_id, {'svn_access_control': config_text})
+        # info report
         info = QMessageBox()
         info.setWindowTitle('Access Control Generation')
         info.setText('Finished')
@@ -265,10 +267,12 @@ def project_task_info_gen(project_name):
 
 def project_files_gen(project_name, blender,
                       mount_point='C:' + os.environ.get('homepath').replace("\\", "/") + '/projects/'):
+    print(mount_point)
     project = gazu.project.get_project_by_name(project_name)
     project_id = project['id']
-    project_path = mount_point + project_name
+    project_path = mount_point +'/'+ project_name
     print(mount_point)
+    print(project_path)
 
     if not os.path.isdir(mount_point):
         # checking if mount point exist
