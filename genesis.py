@@ -14,6 +14,7 @@ def folder_structure(mount_point, project_name):
     # checking if mount point exist
     if not os.path.isdir(mount_point):
         os.mkdir(mount_point)
+		
     # checking if project path exist
     if not os.path.isdir(project_path):
         os.mkdir(project_path)
