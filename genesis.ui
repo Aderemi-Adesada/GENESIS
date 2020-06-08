@@ -210,6 +210,17 @@ QLineEdit {
     padding: 0 8px;
     background: white;
     selection-background-color: darkgray;
+}
+
+QProgressBar {
+    border: 2px solid grey;
+    border-radius: 5px;
+	text-align: center;
+}
+
+QProgressBar::chunk {
+    background-color: rgb(68, 124, 144);
+    width: 20px;
 }</string>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -830,6 +841,31 @@ font-size:20px</string>
        </widget>
       </item>
      </layout>
+    </item>
+    <item>
+     <widget class="QFrame" name="status">
+      <property name="minimumSize">
+       <size>
+        <width>30</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_8">
+       <item>
+        <widget class="QProgressBar" name="progress_bar">
+         <property name="value">
+          <number>24</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </item>
    </layout>
   </widget>

@@ -21,6 +21,8 @@ class MainWindow(QMainWindow):
         self.svn_parent_path_input.setText(settings['svn parent path'])
         self.blender_directory_input.setText(settings['blender directory'])
 
+        self.progress_bar.setValue(0)
+
         self.menu_button.clicked.connect(lambda: self.toggleMenu(220, True))
         self.project_button.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(0))
         self.settings_button.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(1))
@@ -32,7 +34,8 @@ class MainWindow(QMainWindow):
                                                                          blender=self.blender_directory_input.text(),
                                                                          mount_point=self.project_mounting_point_input.text()))
         self.access_control.clicked.connect(lambda: create_svn_config(selected_project(),
-                                                                      self.svn_parent_path_input.text()))
+                                                                      self.svn_parent_path_input.text(),
+                                                                      progress_bar=self.progress_bar))
         self.project_task_details.clicked.connect(lambda: project_task_info_gen(str(selected_project())))
         self.save_settings_button.clicked.connect(self.setings)
 

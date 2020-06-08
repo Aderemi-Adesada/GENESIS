@@ -6,7 +6,7 @@ import json
 from configparser import ConfigParser
 from PyQt5.QtWidgets import QMessageBox
 
-
+project_tasks_info = []
 def folder_structure(mount_point, project_name):
     project_path = mount_point +'/'+ project_name
     base_directories = ['edit', 'lib', 'refs', 'scenes', 'tools']
@@ -85,79 +85,13 @@ def asset_gen(asset, asset_path, blender):
     os.remove(asset_file + '1')
 
 
-def create_svn_config(project_name, svn_parent_path, json_data=None):
-    print('1')
-    def set_write_permissions(task_info):
-        if task_info['svn_dir'] in config:
-            assignees = task_info['assignees']
-            for assignee in assignees:
-                config.set(task_info['svn_dir'], assignee['full_name'], 'rw')
-        else:
-            assignees = task_info['assignees']
-            for assignee in assignees:
-                config[task_info['svn_dir']] = {
-                    assignee['full_name']: 'rw'
-                }
-
-    def set_read_permission(task_info):
-        # this should be called after the set_write_permissions functions
-        assignees = task_info['assignees']
-        for assignee in assignees:
-            for dependency in task_info['dependencies']:
-                if dependency['svn_dir'] in config:
-                    if config.has_option(dependency['svn_dir'], assignee['full_name']):
-                        pass
-                    else:
-                        config.set(dependency['svn_dir'], assignee['full_name'], 'r')
-
-    project = gazu.project.get_project_by_name(project_name)
-    project_id = project['id']
-    # with open(json_data, 'r') as data:
-    #     task_infos = json.load(data)
-    project_data = gazu.project.get_project(project_id)
-    print('2')
-    if 'data' in project_data and 'tasks_details' in project_data['data']:
-        print('3')
-        task_infos = project_data['data']['tasks_details']
-        print(task_infos)
-        config = ConfigParser()
-
-        for task_info in task_infos:
-            set_write_permissions(task_info)
-
-        for task_info in task_infos:
-            set_read_permission(task_info)
-
-        # todo write authz file to svn server
-        with open(f'{svn_parent_path}/{project_name}/conf/authz', 'w') as file:
-            config.write(file)
-
-        # with open(f'{svn_parent_path}/{project_name}/conf/authz') as data:
-        #     config_text = data.read()
-        #     print(config_text)
-        #     gazu.project.update_project_data(project_id, {'svn_access_control': config_text})
-        # info report
-        info = QMessageBox()
-        info.setWindowTitle('Access Control Generation')
-        info.setText('Finished')
-        info.setIcon(QMessageBox.Information)
-        info.exec_()
-    else:
-        error = QMessageBox()
-        error.setWindowTitle('Access Control Generation Error')
-        error.setText('Project task details doesnt exist, please generate tasks infos first')
-        error.setIcon(QMessageBox.Critical)
-        error.exec_()
-
-
-
 def project_task_info_gen(project_name):
     project = gazu.project.get_project_by_name(project_name)
     project_id = project['id']
     shots = gazu.shot.all_shots_for_project(project_id)
     assets = gazu.asset.all_assets_for_project(project_id)
     kitsu_task_types = gazu.task.all_task_types()
-    project_tasks_info = []
+    # project_tasks_info = []
 
     # generates dependency info of tasks
     def dependencies_cast(cast, dependency_list_output):
@@ -260,9 +194,81 @@ def project_task_info_gen(project_name):
     #todo
     # stores infos to project details with is to much
     # create a dedicated table for the info
+
     gazu.project.update_project_data(project_id, {'tasks_details': project_tasks_info})
     # with open(f'{project_name}_tasks_info.json', 'w') as data:
     #     json.dump(project_tasks_info, data, indent=2)
+
+
+def create_svn_config(project_name, svn_parent_path, json_data=None):
+    def set_write_permissions(task_info):
+        if task_info['svn_dir'] in config:
+            assignees = task_info['assignees']
+            for assignee in assignees:
+                config.set(task_info['svn_dir'], assignee['full_name'], 'rw')
+        else:
+            assignees = task_info['assignees']
+            for assignee in assignees:
+                config[task_info['svn_dir']] = {
+                    assignee['full_name']: 'rw'
+                }
+
+    def set_read_permission(task_info):
+        # this should be called after the set_write_permissions functions
+        assignees = task_info['assignees']
+        for assignee in assignees:
+            for dependency in task_info['dependencies']:
+                if dependency['svn_dir'] in config:
+                    if config.has_option(dependency['svn_dir'], assignee['full_name']):
+                        pass
+                    else:
+                        config.set(dependency['svn_dir'], assignee['full_name'], 'r')
+
+    project = gazu.project.get_project_by_name(project_name)
+    project_id = project['id']
+    # with open(json_data, 'r') as data:
+    #     task_infos = json.load(data)
+    project_data = gazu.project.get_project(project_id)
+    print('2')
+    if 'data' in project_data and 'tasks_details' in project_data['data']:
+        print('3')
+        task_infos = project_data['data']['tasks_details']
+        # print(task_infos)
+        config = ConfigParser()
+
+        for task_info in task_infos:
+            set_write_permissions(task_info)
+        for task_info in task_infos:
+            set_read_permission(task_info)
+        # todo write authz file to svn server
+        if os.path.isdir(f'{svn_parent_path}/{project_name}'):
+            with open(f'{svn_parent_path}/{project_name}/conf/authz', 'w') as file:
+                config.write(file)
+
+            # with open(f'{svn_parent_path}/{project_name}/conf/authz') as data:
+            #     config_text = data.read()
+            #     print(config_text)
+            #     gazu.project.update_project_data(project_id, {'svn_access_control': config_text})
+            # info report
+            print('finished')
+            info = QMessageBox()
+            info.setWindowTitle('Access Control Generation')
+            info.setText('Finished')
+            info.setIcon(QMessageBox.Information)
+            info.exec_()
+        else:
+            error = QMessageBox()
+            error.setWindowTitle('Access Control Generation Error')
+            error.setText('svn path do not exist')
+            error.setIcon(QMessageBox.Critical)
+            error.exec_()
+    else:
+        print('help')
+        error = QMessageBox()
+        error.setWindowTitle('Access Control Generation Error')
+        error.setText('Project task details doesnt exist, please generate tasks infos first')
+        error.setIcon(QMessageBox.Critical)
+        error.exec_()
 
 
 def project_files_gen(project_name, blender,
@@ -279,41 +285,56 @@ def project_files_gen(project_name, blender,
         os.mkdir(mount_point)
     if not os.path.isdir(project_path):
         folder_structure(mount_point, project_name)
+        if os.path.isfile(blender):
+            asset_types = gazu.asset.all_asset_types_for_project(project)
+            chars_type_id = None
+            props_type_id = None
+            envs_type_id = None
+            for asset_type in asset_types:
+                if asset_type['name'] == 'chars':
+                    chars_type_id = asset_type['id']
+                if asset_type['name'] == 'props':
+                    props_type_id = asset_type['id']
+                if asset_type['name'] == 'envs':
+                    envs_type_id = asset_type['id']
 
-        asset_types = gazu.asset.all_asset_types_for_project(project)
-        chars_type_id = None
-        props_type_id = None
-        envs_type_id = None
-        for asset_type in asset_types:
-            if asset_type['name'] == 'chars':
-                chars_type_id = asset_type['id']
-            if asset_type['name'] == 'props':
-                props_type_id = asset_type['id']
-            if asset_type['name'] == 'envs':
-                envs_type_id = asset_type['id']
+            if chars_type_id is not None:
+                chars = gazu.asset.all_assets_for_project_and_type(project_id, chars_type_id)
+                for char in chars:
+                    chars_path = project_path + '/lib/' + 'chars/'
+                    asset_gen(char, chars_path, blender)
 
-        if chars_type_id is not None:
-            chars = gazu.asset.all_assets_for_project_and_type(project_id, chars_type_id)
-            for char in chars:
-                chars_path = project_path + '/lib/' + 'chars/'
-                asset_gen(char, chars_path, blender)
+            if envs_type_id is not None:
+                envs = gazu.asset.all_assets_for_project_and_type(project_id, envs_type_id)
+                for env in envs:
+                    envs_path = project_path + '/lib/' + 'envs/'
+                    asset_gen(env, envs_path, blender)
 
-        if envs_type_id is not None:
-            envs = gazu.asset.all_assets_for_project_and_type(project_id, envs_type_id)
-            for env in envs:
-                envs_path = project_path + '/lib/' + 'envs/'
-                asset_gen(env, envs_path, blender)
+            if props_type_id is not None:
+                props = gazu.asset.all_assets_for_project_and_type(project_id, props_type_id)
+                for prop in props:
+                    props_path = project_path + '/lib/' + 'props/'
+                    asset_gen(prop, props_path, blender)
 
-        if props_type_id is not None:
-            props = gazu.asset.all_assets_for_project_and_type(project_id, props_type_id)
-            for prop in props:
-                props_path = project_path + '/lib/' + 'props/'
-                asset_gen(prop, props_path, blender)
+            # creates scenes, shots, and shot files
+            scenes = gazu.context.all_sequences_for_project(project_id)
+            for scene in scenes:
+                scene_files_gen(scene, project_path, blender)
+        else:
+            # info report
+            info = QMessageBox()
+            info.setWindowTitle('Project File Generation')
+            info.setText('Blender executable not existing')
+            info.setIcon(QMessageBox.Critical)
+            info.exec_()
+    else:
+        # info report
+        info = QMessageBox()
+        info.setWindowTitle('Project File Generation')
+        info.setText('project already exist in stated directory')
+        info.setIcon(QMessageBox.Information)
+        info.exec_()
 
-        # creates scenes, shots, and shot files
-        scenes = gazu.context.all_sequences_for_project(project_id)
-        for scene in scenes:
-            scene_files_gen(scene, project_path, blender)
 
 
 def set_file_tree(project_name, file_tree):
@@ -325,43 +346,30 @@ def set_file_tree(project_name, file_tree):
 
 
 if __name__ == '__main__':
-    # x = os.environ.get('homepath')
-    # print(x)
-    # drive = 'C:'
-    # p_dir = drive + x + '/projects/test/'
-    # folder_structure(p_dir, 'folder')
-    # end=0
-    # x = 'stop'
-    # while end < 5 and x == 'stop':
-    #     print(end)
-    #     print('true')
-    #     end +=1
-
 
     gazu.set_host('https://eaxum.cg-wire.com/api')
     gazu.log_in('aderemi@eaxum.com', 'testing')
-    # project = gazu.project.get_project_by_name('tao')
-    # project_id = '665ce354-8e1f-41b5-9c47-16132aa98bc7'
-    # blender = "C:/Program Files/Blender Foundation/Blender 2.82/blender.exe"
+    blender = "C:/Program Files/Blender Foundation/Blender 2.82/blender.exe"
 
-    # blender = "C:/Program Files/Blender Foundation/Blender 2.82/blender.exe"
+
     # # project_files_gen('test_project', blender)
     # project_files_gen('tao', blender)
-    # print('kjhkj')
+
     # create_svn_config('asthma')
     # gazu.project.update_project_data('665ce354-8e1f-41b5-9c47-16132aa98bc7', {'repository_url': 'http://rukia:8080/svn/tao/'})
-    # gazu.project.update_project()
     # x = gazu.project.get_project('665ce354-8e1f-41b5-9c47-16132aa98bc7')
     # print(x)
-    with open('file_tree.json', 'r') as data:
-        file_tree = json.load(data)
+    # with open('file_tree.json', 'r') as data:
+    #     file_tree = json.load(data)
         # json.load(data)
-        # print(file_tree)
-    # print(file_tree)
-    set_file_tree('tao', file_tree)
+
+    # set_file_tree('tao', file_tree)
     # gazu.files.update_project_file_tree('b7143b90-155b-4aeb-96fe-bcaf0240b703', file_tree)
     name = gazu.project.get_project_by_name('tao')
-    txt = name['data']['svn_access_control']
+    # txt = name['data']['svn_access_control']
+    # create_svn_config('asthma', '//rukia/projects/')
+    txt = 'hfjkhsdkjfhfsdfsfsfad'
+    print(os.path.isdir(f'//rukia/projects/tao/'))
     # print(name['data']['svn_access_control'])
     # with open('//rukia/projects/tao/conf/authz', 'w') as data:
     #     data.write(txt)
