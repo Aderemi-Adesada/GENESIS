@@ -6,8 +6,9 @@ from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QPropertyAnimation
 from genesis import project_files_gen, create_svn_config, set_file_tree, new_file_tree
 import gazu
+from gazu.exception import MethodNotAllowedException, RouteNotFoundException
 import json
-import requests
+from requests.exceptions import MissingSchema, InvalidSchema, ConnectionError
 import resources
 import os
 settings_dir = 'settings.json'
@@ -106,12 +107,9 @@ class LoginWindow(QMainWindow):
 
     def login(self):
         try:
-            host = 'https://eaxum.cg-wire.com/api'
-            username = 'aderemi@eaxum.com'
-            password = 'testing'
-            # host = self.host_url.text()
-            # username = self.username_input.text()
-            # password = self.password_input.text()
+            host = self.host_url.text()
+            username = self.username_input.text()
+            password = self.password_input.text()
             gazu.set_host(host)
             gazu.log_in(username, password)
             self.switch_window.emit()
@@ -121,17 +119,34 @@ class LoginWindow(QMainWindow):
             error.setWindowTitle('Login Error')
             error.setText('Login failure, Wrong credecials')
             error.setIcon(QMessageBox.Critical)
-
-            x = error.exec_()
-            print('error')
-        except requests.exceptions.ConnectionError:
+            error.exec_()
+        except gazu.exception.ParameterException:
             error = QMessageBox()
             error.setWindowTitle('Login Error')
-            error.setText('no connection')
+            error.setText('Login failure, Wrong credecials. pls check login details or host')
             error.setIcon(QMessageBox.Critical)
+            error.exec_()
+        except (MethodNotAllowedException, RouteNotFoundException):
+            error = QMessageBox()
+            error.setWindowTitle('Login Error')
+            error.setText('invalid host url')
+            error.setIcon(QMessageBox.Critical)
+            error.exec_()
+        except (MissingSchema, InvalidSchema, ConnectionError) as err:
+            error = QMessageBox()
+            error.setWindowTitle('Login Error')
+            error.setText(str(err))
+            error.setIcon(QMessageBox.Critical)
+            error.exec_()
+        except Exception as e:
+            print(e)
+            error = QMessageBox()
+            error.setWindowTitle('Login Error')
+            error.setText('something went wrong:   ' + str(e))
+            error.setIcon(QMessageBox.Critical)
+            error.exec_()
 
-            x = error.exec_()
-            print('error')
+
 
 
 

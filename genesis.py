@@ -252,19 +252,25 @@ def create_svn_config(project_name, svn_parent_path):
 
 def project_files_gen(project_name, blender,
                       mount_point='C:' + os.environ.get('homepath').replace("\\", "/") + '/projects/'):
-    print(mount_point)
     project = gazu.project.get_project_by_name(project_name)
     project_id = project['id']
     project_path = mount_point +'/'+ project_name
-    print(mount_point)
-    print(project_path)
 
-    if not os.path.isdir(mount_point):
-        # checking if mount point exist
-        os.mkdir(mount_point)
+    try:
+        if not os.path.isdir(mount_point):
+            # checking if mount point exist
+            os.mkdir(mount_point)
+    except FileNotFoundError:
+        # info report
+        error = QMessageBox()
+        error.setWindowTitle('Project File Generation')
+        error.setText('invalid mount point')
+        error.setIcon(QMessageBox.Critical)
+        error.exec_()
+
     if not os.path.isdir(project_path):
-        folder_structure(mount_point, project_name)
         if os.path.isfile(blender):
+            folder_structure(mount_point, project_name)
             asset_types = gazu.asset.all_asset_types_for_project(project)
             chars_type_id = None
             props_type_id = None
@@ -301,11 +307,11 @@ def project_files_gen(project_name, blender,
                 scene_files_gen(scene, project_path, blender)
         else:
             # info report
-            info = QMessageBox()
-            info.setWindowTitle('Project File Generation')
-            info.setText('Blender executable not existing')
-            info.setIcon(QMessageBox.Critical)
-            info.exec_()
+            error = QMessageBox()
+            error.setWindowTitle('Project File Generation')
+            error.setText('Blender executable do not exist')
+            error.setIcon(QMessageBox.Critical)
+            error.exec_()
     else:
         # info report
         info = QMessageBox()
@@ -343,31 +349,7 @@ def new_file_tree():
 
 
 if __name__ == '__main__':
-    new_file_tree()
+    gazu.set_host('https://eaxum.cg-wire.com/api')
+    gazu.log_in('aderemi@eaxum.com', 'testing')
+    project_files_gen('tao', 'C:/Program Files/Blender Foundation/Blender 2.83/blender.exe', 'C:/users/tanjio/projects/task' )
 
-    # gazu.set_host('https://eaxum.cg-wire.com/api')
-    # gazu.log_in('aderemi@eaxum.com', 'testing')
-    # blender = "C:/Program Files/Blender Foundation/Blender 2.82/blender.exe"
-    # create_svn_config('tao', '//asuna/projects/')
-    # print(project_tasks_info)
-    # file_trees = os.listdir('file_trees')
-    # set_file_tree('tao', 'test')
-
-    # create_svn_config('asthma')
-    # gazu.project.update_project_data('665ce354-8e1f-41b5-9c47-16132aa98bc7', {'tasks_details': None})
-    # x = gazu.project.get_project('665ce354-8e1f-41b5-9c47-16132aa98bc7')
-    # print(x)
-    # with open('file_tree.json', 'r') as data:
-    #     file_tree = json.load(data)
-        # json.load(data)
-
-    # set_file_tree('tao', file_tree)
-    # gazu.files.update_project_file_tree('b7143b90-155b-4aeb-96fe-bcaf0240b703', file_tree)
-    # name = gazu.project.get_project_by_name('tao')
-    # txt = name['data']['svn_access_control']
-    # create_svn_config('asthma', '//rukia/projects/')
-    # txt = 'hfjkhsdkjfhfsdfsfsfad'
-    # print(os.path.isdir(f'//rukia/projects/tao/'))
-    # print(name['data']['svn_access_control'])
-    # with open(''//rukia/projects/tao/conf/authz'tao/conf/authz', 'w') as data:
-    #     data.write(txt)
