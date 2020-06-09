@@ -4,11 +4,12 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 from PyQt5.uic import loadUi
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QPropertyAnimation
-from genesis import project_files_gen, project_task_info_gen, create_svn_config
+from genesis import project_files_gen, create_svn_config, set_file_tree, new_file_tree
 import gazu
 import json
 import requests
 import resources
+import os
 settings_dir = 'settings.json'
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -20,13 +21,14 @@ class MainWindow(QMainWindow):
         self.project_mounting_point_input.setText(settings['mount point'])
         self.svn_parent_path_input.setText(settings['svn parent path'])
         self.blender_directory_input.setText(settings['blender directory'])
+        self.refresh()
+        self.refresh_button.clicked.connect(self.refresh)
 
         self.progress_bar.setValue(0)
 
         self.menu_button.clicked.connect(lambda: self.toggleMenu(220, True))
         self.project_button.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(0))
         self.settings_button.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(1))
-        self.project_list()
 
         print(str(self.project_select.currentText()))
         selected_project = self.project_select.currentText
@@ -34,9 +36,11 @@ class MainWindow(QMainWindow):
                                                                          blender=self.blender_directory_input.text(),
                                                                          mount_point=self.project_mounting_point_input.text()))
         self.access_control.clicked.connect(lambda: create_svn_config(selected_project(),
-                                                                      self.svn_parent_path_input.text(),
-                                                                      progress_bar=self.progress_bar))
-        self.project_task_details.clicked.connect(lambda: project_task_info_gen(str(selected_project())))
+                                                                      self.svn_parent_path_input.text()))
+        self.set_file_tree_button.clicked.connect(lambda: set_file_tree(project_name=selected_project(),
+                                                                        file_tree_name=self.file_tree_select.currentText()))
+        self.new_file_tree_button.clicked.connect(new_file_tree)
+        # self.project_task_details.clicked.connect(lambda: project_task_info_gen(str(selected_project())))
         self.save_settings_button.clicked.connect(self.setings)
 
     def toggleMenu(self, maxWidth, enable):
@@ -61,6 +65,17 @@ class MainWindow(QMainWindow):
             self.animation.setEasingCurve(QtCore.QEasingCurve.InOutQuart)
             self.animation.start()
 
+    def file_tree_list(self):
+        file_trees = os.listdir('file_trees')
+        self.file_tree_select.clear()
+        for file_tree in file_trees:
+            file_tree_name = file_tree.rsplit('.', 1)
+            if file_tree_name[1] == 'json':
+                self.file_tree_select.addItem(file_tree_name[0])
+
+    def refresh(self):
+        self.project_list()
+        self.file_tree_list()
 
     def project_list(self):
         all_open_projects = gazu.project.all_open_projects()

@@ -167,8 +167,8 @@ QComboBox::drop-down {
     subcontrol-position: top right;
     width: 40px;
     border-left-width: 0px;
-    border-top-right-radius: 3px;
-    border-bottom-right-radius: 3px;
+    border-top-right-radius: 1px;
+    border-bottom-right-radius: 1px;
 }
 
 QComboBox::down-arrow {
@@ -309,33 +309,6 @@ font-size:30px;</string>
          </property>
          <property name="text">
           <string>Nagato</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="lineEdit">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>30</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QLineEdit {
-	background-color: rgb(27, 29, 35);
-	border-radius: 5px;
-	border: 2px solid rgb(27, 29, 35);
-	padding-left: 10px;
-}
-QLineEdit:hover {
-	border: 2px solid rgb(64, 71, 88);
-}
-QLineEdit:focus {
-	border: 2px solid rgb(91, 101, 124);
-}</string>
-         </property>
-         <property name="placeholderText">
-          <string>blender directory</string>
          </property>
         </widget>
        </item>
@@ -527,7 +500,7 @@ font-size:20px</string>
       <item>
        <widget class="QStackedWidget" name="stackedWidget">
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="project_page">
          <layout class="QGridLayout" name="gridLayout">
@@ -555,74 +528,6 @@ font-size:20px</string>
              <enum>QFrame::Raised</enum>
             </property>
             <layout class="QGridLayout" name="gridLayout_3">
-             <item row="0" column="0">
-              <widget class="QComboBox" name="project_select">
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>35</height>
-                </size>
-               </property>
-               <property name="styleSheet">
-                <string notr="true"/>
-               </property>
-               <property name="iconSize">
-                <size>
-                 <width>20</width>
-                 <height>20</height>
-                </size>
-               </property>
-               <item>
-                <property name="text">
-                 <string>eaxum</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>kitsu</string>
-                </property>
-               </item>
-              </widget>
-             </item>
-             <item row="4" column="0">
-              <widget class="QPushButton" name="project_task_details">
-               <property name="text">
-                <string>project tasks details</string>
-               </property>
-               <property name="icon">
-                <iconset resource="resources.qrc">
-                 <normaloff>:/icons/icons/24x24/cil-task.png</normaloff>:/icons/icons/24x24/cil-task.png</iconset>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="0">
-              <widget class="QPushButton" name="access_control">
-               <property name="text">
-                <string>Access Control </string>
-               </property>
-               <property name="icon">
-                <iconset resource="resources.qrc">
-                 <normaloff>:/icons/icons/24x24/cil-lock-unlocked.png</normaloff>:/icons/icons/24x24/cil-lock-unlocked.png</iconset>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QPushButton" name="gen_project_files">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="layoutDirection">
-                <enum>Qt::LeftToRight</enum>
-               </property>
-               <property name="text">
-                <string>generate project files</string>
-               </property>
-               <property name="icon">
-                <iconset resource="resources.qrc">
-                 <normaloff>:/icons/icons/24x24/cil-folder.png</normaloff>:/icons/icons/24x24/cil-folder.png</iconset>
-               </property>
-              </widget>
-             </item>
              <item row="6" column="0">
               <widget class="QFrame" name="frame">
                <property name="styleSheet">
@@ -638,7 +543,7 @@ font-size:20px</string>
                 <item row="0" column="0">
                  <layout class="QVBoxLayout" name="verticalLayout_6">
                   <item>
-                   <widget class="QComboBox" name="comboBox_4">
+                   <widget class="QComboBox" name="file_tree_select">
                     <item>
                      <property name="text">
                       <string>New Item</string>
@@ -657,14 +562,14 @@ font-size:20px</string>
                      <enum>QLayout::SetDefaultConstraint</enum>
                     </property>
                     <item>
-                     <widget class="QPushButton" name="pushButton_10">
+                     <widget class="QPushButton" name="new_file_tree_button">
                       <property name="text">
-                       <string>New file trree</string>
+                       <string>New file tree</string>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QPushButton" name="pushButton_8">
+                     <widget class="QPushButton" name="set_file_tree_button">
                       <property name="text">
                        <string>Set File Tree</string>
                       </property>
@@ -675,6 +580,34 @@ font-size:20px</string>
                  </layout>
                 </item>
                </layout>
+              </widget>
+             </item>
+             <item row="4" column="0">
+              <widget class="QPushButton" name="access_control">
+               <property name="text">
+                <string>Generate Access Control </string>
+               </property>
+               <property name="icon">
+                <iconset resource="resources.qrc">
+                 <normaloff>:/icons/icons/24x24/cil-lock-unlocked.png</normaloff>:/icons/icons/24x24/cil-lock-unlocked.png</iconset>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QPushButton" name="gen_project_files">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="layoutDirection">
+                <enum>Qt::LeftToRight</enum>
+               </property>
+               <property name="text">
+                <string>generate project files</string>
+               </property>
+               <property name="icon">
+                <iconset resource="resources.qrc">
+                 <normaloff>:/icons/icons/24x24/cil-folder.png</normaloff>:/icons/icons/24x24/cil-folder.png</iconset>
+               </property>
               </widget>
              </item>
              <item row="7" column="0">
@@ -689,6 +622,59 @@ font-size:20px</string>
                 </size>
                </property>
               </spacer>
+             </item>
+             <item row="0" column="0">
+              <layout class="QHBoxLayout" name="horizontalLayout_9">
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QComboBox" name="project_select">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>35</height>
+                  </size>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true"/>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>20</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>eaxum</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>kitsu</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="refresh_button">
+                 <property name="maximumSize">
+                  <size>
+                   <width>25</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="resources.qrc">
+                   <normaloff>:/icons/icons/black/cil-reload.png</normaloff>:/icons/icons/black/cil-reload.png</iconset>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
             </layout>
            </widget>

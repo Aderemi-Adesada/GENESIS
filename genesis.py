@@ -5,6 +5,7 @@ import ctypes
 import json
 from configparser import ConfigParser
 from PyQt5.QtWidgets import QMessageBox
+# from pynput.keyboard import
 
 project_tasks_info = []
 def folder_structure(mount_point, project_name):
@@ -180,11 +181,6 @@ def project_task_info_gen(project_name):
             asset_task_info(asset, project_tasks_info)
         for shot in shots:
             shot_task_info(shot, project_tasks_info)
-        info = QMessageBox()
-        info.setWindowTitle('Tasks Info Generation')
-        info.setText('Finished')
-        info.setIcon(QMessageBox.Information)
-        info.exec_()
     except gazu.exception.ParameterException as e:
         error = QMessageBox()
         error.setWindowTitle('Access Control Generation Error')
@@ -196,12 +192,12 @@ def project_task_info_gen(project_name):
     # stores infos to project details with is to much
     # create a dedicated table for the info
 
-    gazu.project.update_project_data(project_id, {'tasks_details': project_tasks_info})
+    # gazu.project.update_project_data(project_id, {'tasks_details': project_tasks_info})
     # with open(f'{project_name}_tasks_info.json', 'w') as data:
     #     json.dump(project_tasks_info, data, indent=2)
 
 
-def create_svn_config(project_name, svn_parent_path, json_data=None):
+def create_svn_config(project_name, svn_parent_path):
     def set_write_permissions(task_info):
         if task_info['svn_dir'] in config:
             assignees = task_info['assignees']
@@ -225,49 +221,31 @@ def create_svn_config(project_name, svn_parent_path, json_data=None):
                     else:
                         config.set(dependency['svn_dir'], assignee['full_name'], 'r')
 
-    project = gazu.project.get_project_by_name(project_name)
-    project_id = project['id']
-    # with open(json_data, 'r') as data:
-    #     task_infos = json.load(data)
-    project_data = gazu.project.get_project(project_id)
-    print('2')
-    if 'data' in project_data and 'tasks_details' in project_data['data']:
-        print('3')
-        task_infos = project_data['data']['tasks_details']
-        # print(task_infos)
+    # todo write authz file to svn server
+    if os.path.isdir(f'{svn_parent_path}/{project_name}'):
+        project_task_info_gen(project_name)
+        task_infos = project_tasks_info
         config = ConfigParser()
 
         for task_info in task_infos:
             set_write_permissions(task_info)
         for task_info in task_infos:
             set_read_permission(task_info)
-        # todo write authz file to svn server
-        if os.path.isdir(f'{svn_parent_path}/{project_name}'):
-            with open(f'{svn_parent_path}/{project_name}/conf/authz', 'w') as file:
-                config.write(file)
 
-            # with open(f'{svn_parent_path}/{project_name}/conf/authz') as data:
-            #     config_text = data.read()
-            #     print(config_text)
-            #     gazu.project.update_project_data(project_id, {'svn_access_control': config_text})
-            # info report
-            print('finished')
-            info = QMessageBox()
-            info.setWindowTitle('Access Control Generation')
-            info.setText('Finished')
-            info.setIcon(QMessageBox.Information)
-            info.exec_()
-        else:
-            error = QMessageBox()
-            error.setWindowTitle('Access Control Generation Error')
-            error.setText('svn path do not exist')
-            error.setIcon(QMessageBox.Critical)
-            error.exec_()
+        with open(f'{svn_parent_path}/{project_name}/conf/authz', 'w') as file:
+            config.write(file)
+
+
+        # info report
+        info = QMessageBox()
+        info.setWindowTitle('Access Control Generation')
+        info.setText('Finished')
+        info.setIcon(QMessageBox.Information)
+        info.exec_()
     else:
-        print('help')
         error = QMessageBox()
         error.setWindowTitle('Access Control Generation Error')
-        error.setText('Project task details doesnt exist, please generate tasks infos first')
+        error.setText('svn path do not exist')
         error.setIcon(QMessageBox.Critical)
         error.exec_()
 
@@ -337,27 +315,46 @@ def project_files_gen(project_name, blender,
         info.exec_()
 
 
-
-def set_file_tree(project_name, file_tree):
+def set_file_tree(project_name, file_tree_name):
     project = gazu.project.get_project_by_name(project_name)
     project_id = project['id']
-    # gazu.files.set_project_file_tree(project_id, 'default')
-    gazu.files.update_project_file_tree(project_id, file_tree)
+    try:
+        with open(f'file_trees/{file_tree_name}.json', 'r') as data:
+            file_tree = json.load(data)
+        gazu.files.update_project_file_tree(project_id, file_tree)
 
+
+        info = QMessageBox()
+        info.setWindowTitle('Set file tree')
+        info.setText('Done')
+        info.setIcon(QMessageBox.Information)
+        info.exec_()
+    except json.decoder.JSONDecodeError:
+        error = QMessageBox()
+        error.setWindowTitle('Set file tree')
+        error.setText('invalid json format')
+        error.setIcon(QMessageBox.Critical)
+        error.exec_()
+    # gazu.files.set_project_file_tree(project_id, 'default')
+
+
+def new_file_tree():
+    ctypes.windll.shell32.ShellExecuteW(None, "open", 'notepad', 'C:/users/tanjiro/projects/genesis/file_trees/default.json', None, 1)
 
 
 if __name__ == '__main__':
+    new_file_tree()
 
-    gazu.set_host('https://eaxum.cg-wire.com/api')
-    gazu.log_in('aderemi@eaxum.com', 'testing')
-    blender = "C:/Program Files/Blender Foundation/Blender 2.82/blender.exe"
-
-
-    # # project_files_gen('test_project', blender)
-    # project_files_gen('tao', blender)
+    # gazu.set_host('https://eaxum.cg-wire.com/api')
+    # gazu.log_in('aderemi@eaxum.com', 'testing')
+    # blender = "C:/Program Files/Blender Foundation/Blender 2.82/blender.exe"
+    # create_svn_config('tao', '//asuna/projects/')
+    # print(project_tasks_info)
+    # file_trees = os.listdir('file_trees')
+    # set_file_tree('tao', 'test')
 
     # create_svn_config('asthma')
-    # gazu.project.update_project_data('665ce354-8e1f-41b5-9c47-16132aa98bc7', {'repository_url': 'http://rukia:8080/svn/tao/'})
+    # gazu.project.update_project_data('665ce354-8e1f-41b5-9c47-16132aa98bc7', {'tasks_details': None})
     # x = gazu.project.get_project('665ce354-8e1f-41b5-9c47-16132aa98bc7')
     # print(x)
     # with open('file_tree.json', 'r') as data:
@@ -366,11 +363,11 @@ if __name__ == '__main__':
 
     # set_file_tree('tao', file_tree)
     # gazu.files.update_project_file_tree('b7143b90-155b-4aeb-96fe-bcaf0240b703', file_tree)
-    name = gazu.project.get_project_by_name('tao')
+    # name = gazu.project.get_project_by_name('tao')
     # txt = name['data']['svn_access_control']
     # create_svn_config('asthma', '//rukia/projects/')
-    txt = 'hfjkhsdkjfhfsdfsfsfad'
-    print(os.path.isdir(f'//rukia/projects/tao/'))
+    # txt = 'hfjkhsdkjfhfsdfsfsfad'
+    # print(os.path.isdir(f'//rukia/projects/tao/'))
     # print(name['data']['svn_access_control'])
-    # with open('//rukia/projects/tao/conf/authz', 'w') as data:
+    # with open(''//rukia/projects/tao/conf/authz'tao/conf/authz', 'w') as data:
     #     data.write(txt)

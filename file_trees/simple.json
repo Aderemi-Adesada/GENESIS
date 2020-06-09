@@ -1,0 +1,61 @@
+{
+    "working": {
+        "mountpoint": "/simple",
+        "root": "productions",
+        "folder_path": {
+            "shot": "<Project>/shots/<Sequence>/<Shot>/<TaskType>/<Software>",
+            "asset": "<Project>/assets/<AssetType>/<Asset>/<TaskType>/<Software>",
+            "sequence": "<Project>/sequences/<Sequence>/<TaskType>/<Software>",
+            "scene": "<Project>/scenes/<Sequence>/<Scene>/<TaskType>/<Software>",
+            "style": "lowercase"
+        },
+        "file_name": {
+            "shot": "<Project>_<Sequence>_<Shot>_<TaskType>_<Name>_v<Version>",
+            "asset": "<Project>_<AssetType>_<Asset>_<TaskType>_<Name>_v<Version>",
+            "sequence": "<Project>_<Sequence>_<TaskType>_<Name>_v<Version>",
+            "scene": "<Project>_<Scene>_<TaskType>_<Name>_v<Version>",
+            "style": "lowercase"
+        }
+    },
+    "output": {
+        "mountpoint": "/simple",
+        "root": "productions/export",
+        "folder_path": {
+            "shot": "<Project>/shots/<Sequence>/<Shot>/<TaskType>/<OutputType>",
+            "asset": "<Project>/assets/<AssetType>/<Asset>/<TaskType>/<OutputType>",
+            "sequence": "<Project>/sequences/<Sequence>/<TaskType>/<OutputType>",
+            "scene": "<Project>/scenes/<Sequence>/<Scene>/<TaskType>/<OutputType>",
+            "instance_asset": "<Project>/assets/<TemporalEntityType>/<TemporalEntity>/<TaskType>/<OutputType>/<AssetType>/<Asset>/instance_<Instance.number>/<Representation>",
+            "instance": "<Project>/<TemporalEntityType>/<Sequence>/<TemporalEntity>/<TaskType>/<OutputType>/<AssetType>/<Asset>/instance_<Instance.number>/<Representation>",
+            "style": "lowercase"
+        },
+        "file_name": {
+            "shot": "<Project>_<Sequence>_<Shot>_<TaskType>_<OutputType>_<Name>_v<Version>",
+            "asset": "<Project>_<AssetType>_<Asset>_<TaskType>_<OutputType>_<Name>_v<Version>",
+            "sequence": "<Project>_<Sequence>_<TaskType>_<OutputType>_<Name>_v<Version>",
+            "scene": "<Project>_<Scene>_<TaskType>_<OutputType>_<Name>_v<Version>",
+            "instance_asset": "<Project>_<TemporalEntityType>_<TemporalEntity>_<TaskType>_<OutputType>_<Name>_<Instance.name>_v<Version>",
+            "instance": "<Project>_<Sequence>_<TemporalEntity>_<TaskType>_<OutputType>_<Name>_<Instance.name>_v<Version>",
+            "style": "lowercase"
+        }
+    },
+    "preview": {
+        "mountpoint": "/simple",
+        "root": "productions/previews",
+        "folder_path": {
+            "shot": "<Project>/shots/<Sequence>/<Shot>/<TaskType>",
+            "asset": "<Project>/assets/<AssetType>/<Asset>/<TaskType>",
+            "sequence": "<Project>/sequences/<Sequence>/<TaskType>",
+            "scene": "<Project>/scenes/<Sequence>/<Scene>/<TaskType>",
+            "style": "lowercase"
+        },
+        "file_name": {
+            "shot": "<Project>_<Sequence>_<Shot>_<TaskType>",
+            "asset": "<Project>_<AssetType>_<Asset>_<TaskType>",
+            "sequence": "<Project>_<Sequence>_<TaskType>",
+            "scene": "<Project>_<Scene>_<TaskType>",
+            "style": "lowercase"
+        }
+    }
+
+}

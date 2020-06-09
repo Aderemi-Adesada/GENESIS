@@ -102,3 +102,7 @@ if __name__ == '__main__':
 # with open('svn_config.txt', 'w') as f:
 #     config.write(f)
 
+# with open(f'{svn_parent_path}/{project_name}/conf/authz') as data:
+#     config_text = data.read()
+#     print(config_text)
+#     gazu.project.update_project_data(project_id, {'svn_access_control': config_text})
