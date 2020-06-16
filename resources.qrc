@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="icons">
+    <file>icons/blender.png</file>
+    <file>icons/subversion.png</file>
     <file>icons/24x24/cil-reload.png</file>
     <file>icons/24x24/cil-arrow-circle-bottom.png</file>
     <file>icons/24x24/cil-3d.png</file>

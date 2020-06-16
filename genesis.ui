@@ -507,7 +507,7 @@ font-size:20px</string>
       <item>
        <widget class="QStackedWidget" name="stackedWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="project_page">
          <layout class="QGridLayout" name="gridLayout">
@@ -776,7 +776,7 @@ font-size:20px</string>
                     <string/>
                    </property>
                    <property name="pixmap">
-                    <pixmap resource="resources.qrc">:/icons/icons/24x24/cil-3d.png</pixmap>
+                    <pixmap resource="resources.qrc">:/icons/icons/blender.png</pixmap>
                    </property>
                   </widget>
                  </item>
@@ -797,11 +797,31 @@ font-size:20px</string>
              <item>
               <layout class="QVBoxLayout" name="verticalLayout_2">
                <item>
-                <widget class="QLabel" name="label_4">
-                 <property name="text">
-                  <string>Project Mounting Point</string>
-                 </property>
-                </widget>
+                <layout class="QHBoxLayout" name="horizontalLayout_10">
+                 <item>
+                  <widget class="QLabel" name="label_8">
+                   <property name="maximumSize">
+                    <size>
+                     <width>30</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="pixmap">
+                    <pixmap resource="resources.qrc">:/icons/icons/24x24/cil-folder-open.png</pixmap>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_9">
+                   <property name="text">
+                    <string>Project mounting point</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </item>
                <item>
                 <widget class="QLineEdit" name="project_mounting_point_input"/>
@@ -814,6 +834,12 @@ font-size:20px</string>
                 <layout class="QHBoxLayout" name="horizontalLayout_5">
                  <item>
                   <widget class="QLabel" name="label">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>0</height>
+                    </size>
+                   </property>
                    <property name="maximumSize">
                     <size>
                      <width>30</width>
@@ -824,7 +850,7 @@ font-size:20px</string>
                     <string/>
                    </property>
                    <property name="pixmap">
-                    <pixmap>:/icons/icons/24x24/cil-home.png</pixmap>
+                    <pixmap resource="resources.qrc">:/icons/icons/subversion.png</pixmap>
                    </property>
                   </widget>
                  </item>
