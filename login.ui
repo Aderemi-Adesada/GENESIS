@@ -26,8 +26,8 @@
    <string>Nagato</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>icons/eaxum_icon.png</normaloff>icons/eaxum_icon.png</iconset>
+   <iconset resource="resources.qrc">
+    <normaloff>:/img/icons/eaxum_icon.png</normaloff>:/img/icons/eaxum_icon.png</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true">*{ 
