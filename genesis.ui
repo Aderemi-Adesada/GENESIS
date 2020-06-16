@@ -179,7 +179,7 @@ QComboBox::drop-down {
 }
 
 QComboBox::down-arrow {
-    image: url(:/icons/icons/black/cil-arrow-circle-bottom.png) ;
+    image: url(:/icons/icons/24x24/cil-arrow-circle-bottom.png) ;
 }
 
 QComboBox::down-arrow:on { /* shift the arrow when popup is open */
@@ -507,7 +507,7 @@ font-size:20px</string>
       <item>
        <widget class="QStackedWidget" name="stackedWidget">
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="project_page">
          <layout class="QGridLayout" name="gridLayout">
@@ -635,8 +635,8 @@ font-size:20px</string>
                   <string/>
                  </property>
                  <property name="icon">
-                  <iconset>
-                   <normaloff>:/icons/icons/black/cil-reload.png</normaloff>:/icons/icons/black/cil-reload.png</iconset>
+                  <iconset resource="resources.qrc">
+                   <normaloff>:/icons/icons/24x24/cil-reload.png</normaloff>:/icons/icons/24x24/cil-reload.png</iconset>
                  </property>
                 </widget>
                </item>
