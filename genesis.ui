@@ -635,7 +635,7 @@ font-size:20px</string>
                   <string/>
                  </property>
                  <property name="icon">
-                  <iconset resource="resources.qrc">
+                  <iconset>
                    <normaloff>:/icons/icons/black/cil-reload.png</normaloff>:/icons/icons/black/cil-reload.png</iconset>
                  </property>
                 </widget>
@@ -648,7 +648,7 @@ font-size:20px</string>
                 <string>Generate Access Control </string>
                </property>
                <property name="icon">
-                <iconset resource="resources.qrc">
+                <iconset>
                  <normaloff>:/icons/icons/24x24/cil-lock-unlocked.png</normaloff>:/icons/icons/24x24/cil-lock-unlocked.png</iconset>
                </property>
               </widget>
@@ -678,7 +678,7 @@ font-size:20px</string>
                 <string>generate project files</string>
                </property>
                <property name="icon">
-                <iconset resource="resources.qrc">
+                <iconset>
                  <normaloff>:/icons/icons/24x24/cil-folder.png</normaloff>:/icons/icons/24x24/cil-folder.png</iconset>
                </property>
               </widget>
@@ -776,7 +776,7 @@ font-size:20px</string>
                     <string/>
                    </property>
                    <property name="pixmap">
-                    <pixmap resource="resources.qrc">:/icons/icons/24x24/cil-hand-point-right.png</pixmap>
+                    <pixmap resource="resources.qrc">:/icons/icons/24x24/cil-3d.png</pixmap>
                    </property>
                   </widget>
                  </item>
@@ -824,7 +824,7 @@ font-size:20px</string>
                     <string/>
                    </property>
                    <property name="pixmap">
-                    <pixmap resource="resources.qrc">:/icons/icons/24x24/cil-home.png</pixmap>
+                    <pixmap>:/icons/icons/24x24/cil-home.png</pixmap>
                    </property>
                   </widget>
                  </item>

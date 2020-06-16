@@ -55,7 +55,7 @@ background-color: transparent;
 
 }
 #login{
-background: url(icons/background_1.png) no-repeat center center fixed;
+background: url(:/img/img/bg_1.png) no-repeat center center fixed;
 }
 
 QLineEdit{
