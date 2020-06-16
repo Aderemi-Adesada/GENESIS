@@ -348,8 +348,22 @@ def new_file_tree():
     ctypes.windll.shell32.ShellExecuteW(None, "open", 'notepad', 'C:/users/tanjiro/projects/genesis/file_trees/default.json', None, 1)
 
 
+def set_svn_url(project_name, url):
+    project = gazu.project.get_project_by_name(project_name)
+    project_id = project['id']
+    gazu.project.update_project_data(project_id, {'repository_url': url})
+
+    info = QMessageBox()
+    info.setWindowTitle('Set svn url')
+    info.setText('Done')
+    info.setIcon(QMessageBox.Information)
+    info.exec_()
+
 if __name__ == '__main__':
     gazu.set_host('https://eaxum.cg-wire.com/api')
     gazu.log_in('aderemi@eaxum.com', 'testing')
-    project_files_gen('tao', 'C:/Program Files/Blender Foundation/Blender 2.83/blender.exe', 'C:/users/tanjio/projects/task' )
+    # set_svn_url('tao', 'isfdfdg')
+    print(gazu.files.build_working_file_path('4b932884-de1f-4f44-a812-faadce3c27c2'))
+    # print(gazu.project.get_project_by_name('tao'))
+    # project_files_gen('tao', 'C:/Program Files/Blender Foundation/Blender 2.83/blender.exe', 'C:/users/tanjio/projects/task' )
 

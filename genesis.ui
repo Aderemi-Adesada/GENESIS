@@ -52,6 +52,13 @@ color: white;
 	border-radius: 25px;
 }
 
+#frame_3{
+	border-width: 1px;
+    border-style: solid;
+    border-color: white;
+	border-radius: 25px;
+}
+
 #login_text{
 background-color:transparent;
 color: white;
@@ -582,47 +589,6 @@ font-size:20px</string>
                </layout>
               </widget>
              </item>
-             <item row="4" column="0">
-              <widget class="QPushButton" name="access_control">
-               <property name="text">
-                <string>Generate Access Control </string>
-               </property>
-               <property name="icon">
-                <iconset resource="resources.qrc">
-                 <normaloff>:/icons/icons/24x24/cil-lock-unlocked.png</normaloff>:/icons/icons/24x24/cil-lock-unlocked.png</iconset>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="0">
-              <widget class="QPushButton" name="gen_project_files">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="layoutDirection">
-                <enum>Qt::LeftToRight</enum>
-               </property>
-               <property name="text">
-                <string>generate project files</string>
-               </property>
-               <property name="icon">
-                <iconset resource="resources.qrc">
-                 <normaloff>:/icons/icons/24x24/cil-folder.png</normaloff>:/icons/icons/24x24/cil-folder.png</iconset>
-               </property>
-              </widget>
-             </item>
-             <item row="7" column="0">
-              <spacer name="verticalSpacer">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>40</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
              <item row="0" column="0">
               <layout class="QHBoxLayout" name="horizontalLayout_9">
                <property name="topMargin">
@@ -675,6 +641,93 @@ font-size:20px</string>
                 </widget>
                </item>
               </layout>
+             </item>
+             <item row="4" column="0">
+              <widget class="QPushButton" name="access_control">
+               <property name="text">
+                <string>Generate Access Control </string>
+               </property>
+               <property name="icon">
+                <iconset resource="resources.qrc">
+                 <normaloff>:/icons/icons/24x24/cil-lock-unlocked.png</normaloff>:/icons/icons/24x24/cil-lock-unlocked.png</iconset>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="0">
+              <spacer name="verticalSpacer">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="3" column="0">
+              <widget class="QPushButton" name="gen_project_files">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="layoutDirection">
+                <enum>Qt::LeftToRight</enum>
+               </property>
+               <property name="text">
+                <string>generate project files</string>
+               </property>
+               <property name="icon">
+                <iconset resource="resources.qrc">
+                 <normaloff>:/icons/icons/24x24/cil-folder.png</normaloff>:/icons/icons/24x24/cil-folder.png</iconset>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="0">
+              <widget class="QFrame" name="frame_3">
+               <property name="styleSheet">
+                <string notr="true"/>
+               </property>
+               <property name="frameShape">
+                <enum>QFrame::StyledPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Raised</enum>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_8">
+                <item row="0" column="0">
+                 <layout class="QVBoxLayout" name="verticalLayout_9">
+                  <item>
+                   <widget class="QLineEdit" name="svn_url_input">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>30</height>
+                     </size>
+                    </property>
+                    <property name="placeholderText">
+                     <string>set svn url </string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_13">
+                    <property name="sizeConstraint">
+                     <enum>QLayout::SetDefaultConstraint</enum>
+                    </property>
+                    <item>
+                     <widget class="QPushButton" name="set_svn_button">
+                      <property name="text">
+                       <string>Set SVN url</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </widget>
              </item>
             </layout>
            </widget>

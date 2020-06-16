@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 from PyQt5.uic import loadUi
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QPropertyAnimation
-from genesis import project_files_gen, create_svn_config, set_file_tree, new_file_tree
+from genesis import project_files_gen, create_svn_config, set_file_tree, new_file_tree, set_svn_url
 import gazu
 from gazu.exception import MethodNotAllowedException, RouteNotFoundException
 import json
@@ -31,7 +31,6 @@ class MainWindow(QMainWindow):
         self.project_button.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(0))
         self.settings_button.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(1))
 
-        print(str(self.project_select.currentText()))
         selected_project = self.project_select.currentText
         self.gen_project_files.clicked.connect(lambda: project_files_gen(project_name=selected_project(),
                                                                          blender=self.blender_directory_input.text(),
@@ -43,6 +42,8 @@ class MainWindow(QMainWindow):
         self.new_file_tree_button.clicked.connect(new_file_tree)
         # self.project_task_details.clicked.connect(lambda: project_task_info_gen(str(selected_project())))
         self.save_settings_button.clicked.connect(self.setings)
+        self.set_svn_button.clicked.connect(lambda:set_svn_url(project_name=selected_project(),
+                                                               url=self.svn_url_input.text()))
 
     def toggleMenu(self, maxWidth, enable):
         if enable:
