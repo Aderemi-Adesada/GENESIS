@@ -97,6 +97,8 @@ class MainWindow(QMainWindow):
         with open('settings.json', 'w') as data:
             json.dump(settings, data, indent=2)
 
+class ProgressBar():
+    sg
 
 class LoginWindow(QMainWindow):
     switch_window = QtCore.pyqtSignal()
