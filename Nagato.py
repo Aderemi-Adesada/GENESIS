@@ -34,17 +34,17 @@ class MainWindow(QMainWindow):
         self.settings_button.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(1))
 
         selected_project = self.project_select.currentText
-        self.gen_project_files.clicked.connect(lambda: project_files_gen(project_name=selected_project(),
+        self.gen_project_files.clicked.connect(lambda: project.files_gen(project_name=selected_project(),
                                                                          blender=self.blender_directory_input.text(),
                                                                          mount_point=self.project_mounting_point_input.text()))
-        self.access_control.clicked.connect(lambda: create_svn_config(selected_project(),
+        self.access_control.clicked.connect(lambda: project.svn_config(selected_project(),
                                                                       self.svn_parent_path_input.text()))
-        self.set_file_tree_button.clicked.connect(lambda: set_file_tree(project_name=selected_project(),
+        self.set_file_tree_button.clicked.connect(lambda: project.set_file_tree(project_name=selected_project(),
                                                                         file_tree_name=self.file_tree_select.currentText()))
-        self.new_file_tree_button.clicked.connect(new_file_tree)
+        self.new_file_tree_button.clicked.connect(project.new_file_tree)
         # self.project_task_details.clicked.connect(lambda: project_task_info_gen(str(selected_project())))
         self.save_settings_button.clicked.connect(self.setings)
-        self.set_svn_button.clicked.connect(lambda:set_svn_url(project_name=selected_project(),
+        self.set_svn_button.clicked.connect(lambda:project.svn_url(project_name=selected_project(),
                                                                url=self.svn_url_input.text()))
 
     def toggleMenu(self, maxWidth, enable):
@@ -105,49 +105,9 @@ class LoginWindow(QMainWindow):
         super(LoginWindow, self).__init__()
         loadUi('login.ui', self)
         self.login_button.clicked.connect(self.login)
-
-        self.login_button.clicked.connect(self.login)
-
     def login(self):
-        try:
-            host = self.host_url.text()
-            username = self.username_input.text()
-            password = self.password_input.text()
-            gazu.set_host(host)
-            gazu.log_in(username, password)
-            self.switch_window.emit()
-            print('Finished')
-        except gazu.exception.NotAuthenticatedException:
-            error = QMessageBox()
-            error.setWindowTitle('Login Error')
-            error.setText('Login failure, Wrong credecials')
-            error.setIcon(QMessageBox.Critical)
-            error.exec_()
-        except gazu.exception.ParameterException:
-            error = QMessageBox()
-            error.setWindowTitle('Login Error')
-            error.setText('Login failure, Wrong credecials. pls check login details or host')
-            error.setIcon(QMessageBox.Critical)
-            error.exec_()
-        except (MethodNotAllowedException, RouteNotFoundException):
-            error = QMessageBox()
-            error.setWindowTitle('Login Error')
-            error.setText('invalid host url')
-            error.setIcon(QMessageBox.Critical)
-            error.exec_()
-        except (MissingSchema, InvalidSchema, ConnectionError) as err:
-            error = QMessageBox()
-            error.setWindowTitle('Login Error')
-            error.setText(str(err))
-            error.setIcon(QMessageBox.Critical)
-            error.exec_()
-        except Exception as e:
-            print(e)
-            error = QMessageBox()
-            error.setWindowTitle('Login Error')
-            error.setText('something went wrong:   ' + str(e))
-            error.setIcon(QMessageBox.Critical)
-            error.exec_()
+        project.login('https://eaxum.cg-wire.com/api', 'aderemi@eaxum.com', 'testing', switch= self.switch_window)
+
 
 
 

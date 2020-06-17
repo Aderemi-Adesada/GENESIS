@@ -4,6 +4,7 @@ import shutil
 import ctypes
 import json
 from configparser import ConfigParser
+from PyQt5 import QtCore
 from PyQt5.QtWidgets import QMessageBox
 from gazu.exception import MethodNotAllowedException, RouteNotFoundException
 from requests.exceptions import MissingSchema, InvalidSchema, ConnectionError
@@ -12,43 +13,60 @@ from requests.exceptions import MissingSchema, InvalidSchema, ConnectionError
 
 class Project():
     def __init__(self):
-        self.project_tasks_info = []
+        self.tasks_info = []
 
-    def login(self, host, username, password):
+    def login(self, host, username, password, switch=None, debug=False):
+        switch_window = QtCore.pyqtSignal()
         try:
             gazu.set_host(host)
             gazu.log_in(username, password)
+            if switch != None:
+                switch.emit()
         except gazu.exception.NotAuthenticatedException:
-            error = QMessageBox()
-            error.setWindowTitle('Login Error')
-            error.setText('Login failure, Wrong credecials')
-            error.setIcon(QMessageBox.Critical)
-            error.exec_()
+            if debug is False:
+                error = QMessageBox()
+                error.setWindowTitle('Login Error')
+                error.setText('Login failure, Wrong credentials')
+                error.setIcon(QMessageBox.Critical)
+                error.exec_()
+            else:
+                print('Login failure, Wrong credentials')
         except gazu.exception.ParameterException:
-            error = QMessageBox()
-            error.setWindowTitle('Login Error')
-            error.setText('Login failure, Wrong credecials. pls check login details or host')
-            error.setIcon(QMessageBox.Critical)
-            error.exec_()
+            if debug is False:
+                error = QMessageBox()
+                error.setWindowTitle('Login Error')
+                error.setText('Login failure, Wrong credentials. pls check login details or host')
+                error.setIcon(QMessageBox.Critical)
+                error.exec_()
+            else:
+                print('Login failure, Wrong credentials. pls check login details or host')
         except (MethodNotAllowedException, RouteNotFoundException):
-            error = QMessageBox()
-            error.setWindowTitle('Login Error')
-            error.setText('invalid host url')
-            error.setIcon(QMessageBox.Critical)
-            error.exec_()
+            if debug is False:
+                error = QMessageBox()
+                error.setWindowTitle('Login Error')
+                error.setText('invalid host url')
+                error.setIcon(QMessageBox.Critical)
+                error.exec_()
+            else:
+                print('invalid host url')
         except (MissingSchema, InvalidSchema, ConnectionError) as err:
-            error = QMessageBox()
-            error.setWindowTitle('Login Error')
-            error.setText(str(err))
-            error.setIcon(QMessageBox.Critical)
-            error.exec_()
+            if debug is False:
+                error = QMessageBox()
+                error.setWindowTitle('Login Error')
+                error.setText(str(err))
+                error.setIcon(QMessageBox.Critical)
+                error.exec_()
+            else:
+                print(str(err))
         except Exception as e:
-            print(e)
-            error = QMessageBox()
-            error.setWindowTitle('Login Error')
-            error.setText('something went wrong:   ' + str(e))
-            error.setIcon(QMessageBox.Critical)
-            error.exec_()
+            if debug is False:
+                error = QMessageBox()
+                error.setWindowTitle('Login Error')
+                error.setText('something went wrong:   ' + str(e))
+                error.setIcon(QMessageBox.Critical)
+                error.exec_()
+            else:
+                print('Login Error')
 
     def folder_structure(self, mount_point, project_name):
         project_path = mount_point +'/'+ project_name
@@ -68,7 +86,7 @@ class Project():
             for directory in lib_directories:
                 os.mkdir(project_path + '/lib/' + directory)
 
-    def scene_files_gen(self, scene, project_path, blender):
+    def scene_gen(self, scene, project_path, blender):
         chars_path = project_path + '/lib/' + 'chars/'
         envs_path = project_path + '/lib/' + 'envs/'
         props_path = project_path + '/lib/' + 'props/'
@@ -126,7 +144,7 @@ class Project():
             pass
         os.remove(asset_file + '1')
 
-    def project_task_info_gen(self, project_name):
+    def task_info_gen(self, project_name):
         project = gazu.project.get_project_by_name(project_name)
         project_id = project['id']
         shots = gazu.shot.all_shots_for_project(project_id)
@@ -217,9 +235,9 @@ class Project():
         print('here')
         try:
             for asset in assets:
-                asset_task_info(asset, self.project_tasks_info)
+                asset_task_info(asset, self.tasks_info)
             for shot in shots:
-                shot_task_info(shot, self.project_tasks_info)
+                shot_task_info(shot, self.tasks_info)
         except gazu.exception.ParameterException as e:
             error = QMessageBox()
             error.setWindowTitle('Access Control Generation Error')
@@ -235,7 +253,7 @@ class Project():
         # with open(f'{project_name}_tasks_info.json', 'w') as data:
         #     json.dump(project_tasks_info, data, indent=2)
 
-    def create_svn_config(self, project_name, svn_parent_path):
+    def svn_config(self, project_name, svn_parent_path, debug=False):
         def set_write_permissions(task_info):
             if task_info['svn_dir'] in config:
                 assignees = task_info['assignees']
@@ -261,8 +279,8 @@ class Project():
 
         # todo write authz file to svn server
         if os.path.isdir(f'{svn_parent_path}/{project_name}'):
-            self.project_task_info_gen(project_name)
-            task_infos = self.project_tasks_info
+            self.task_info_gen(project_name)
+            task_infos = self.tasks_info
             config = ConfigParser()
 
             for task_info in task_infos:
@@ -281,14 +299,18 @@ class Project():
             info.setIcon(QMessageBox.Information)
             info.exec_()
         else:
-            error = QMessageBox()
-            error.setWindowTitle('Access Control Generation Error')
-            error.setText('svn path do not exist')
-            error.setIcon(QMessageBox.Critical)
-            error.exec_()
+            if debug is False:
+                error = QMessageBox()
+                error.setWindowTitle('Access Control Generation Error')
+                error.setText('svn path do not exist')
+                error.setIcon(QMessageBox.Critical)
+                error.exec_()
+            else:
+                print('svn path do not exist')
 
-    def project_files_gen(self, project_name, blender,
-                          mount_point='C:' + os.environ.get('homepath').replace("\\", "/") + '/projects/'):
+    def files_gen(self, project_name, blender,
+                  mount_point='C:' + os.environ.get('homepath').replace("\\", "/") + '/projects/',
+                  debug = False):
         project = gazu.project.get_project_by_name(project_name)
         project_id = project['id']
         project_path = mount_point +'/'+ project_name
@@ -298,12 +320,14 @@ class Project():
                 # checking if mount point exist
                 os.mkdir(mount_point)
         except FileNotFoundError:
-            # info report
-            error = QMessageBox()
-            error.setWindowTitle('Project File Generation')
-            error.setText('invalid mount point')
-            error.setIcon(QMessageBox.Critical)
-            error.exec_()
+            if debug is False:
+                error = QMessageBox()
+                error.setWindowTitle('Project File Generation')
+                error.setText('invalid mount point')
+                error.setIcon(QMessageBox.Critical)
+                error.exec_()
+            else:
+                print('invalid mount point')
 
         if not os.path.isdir(project_path):
             if os.path.isfile(blender):
@@ -341,62 +365,71 @@ class Project():
                 # creates scenes, shots, and shot files
                 scenes = gazu.context.all_sequences_for_project(project_id)
                 for scene in scenes:
-                    self.scene_files_gen(scene, project_path, blender)
+                    self.scene_gen(scene, project_path, blender)
             else:
-                # info report
-                error = QMessageBox()
-                error.setWindowTitle('Project File Generation')
-                error.setText('Blender executable do not exist')
-                error.setIcon(QMessageBox.Critical)
-                error.exec_()
+                if debug is False:
+                    error = QMessageBox()
+                    error.setWindowTitle('Project File Generation')
+                    error.setText('Blender executable do not exist')
+                    error.setIcon(QMessageBox.Critical)
+                    error.exec_()
+                else:
+                    print('Blender executable do not exist')
         else:
-            # info report
-            info = QMessageBox()
-            info.setWindowTitle('Project File Generation')
-            info.setText('project already exist in stated directory')
-            info.setIcon(QMessageBox.Information)
-            info.exec_()
+            if debug is False:
+                info = QMessageBox()
+                info.setWindowTitle('Project File Generation')
+                info.setText('project already exist in stated directory')
+                info.setIcon(QMessageBox.Information)
+                info.exec_()
+            else:
+                print('project already exist in stated directory')
 
-    def set_file_tree(self, project_name, file_tree_name):
+    def set_file_tree(self, project_name, file_tree_name, debug = False):
         project = gazu.project.get_project_by_name(project_name)
         project_id = project['id']
         try:
             with open(f'file_trees/{file_tree_name}.json', 'r') as data:
                 file_tree = json.load(data)
             gazu.files.update_project_file_tree(project_id, file_tree)
-
-
-            info = QMessageBox()
-            info.setWindowTitle('Set file tree')
-            info.setText('Done')
-            info.setIcon(QMessageBox.Information)
-            info.exec_()
+            if debug is False:
+                info = QMessageBox()
+                info.setWindowTitle('Set file tree')
+                info.setText('Done')
+                info.setIcon(QMessageBox.Information)
+                info.exec_()
+            else:
+                print('Done')
         except json.decoder.JSONDecodeError:
-            error = QMessageBox()
-            error.setWindowTitle('Set file tree')
-            error.setText('invalid json format')
-            error.setIcon(QMessageBox.Critical)
-            error.exec_()
-        # gazu.files.set_project_file_tree(project_id, 'default')
+            if debug is False:
+                error = QMessageBox()
+                error.setWindowTitle('Set file tree')
+                error.setText('invalid json format')
+                error.setIcon(QMessageBox.Critical)
+                error.exec_()
+            else:
+                print('invalid json format')
 
     def new_file_tree(self):
         ctypes.windll.shell32.ShellExecuteW(None, "open", 'notepad', 'C:/users/tanjiro/projects/genesis/file_trees/default.json', None, 1)
 
-    def set_svn_url(self, project_name, url):
+    def svn_url(self, project_name, url, debug = False):
         project = gazu.project.get_project_by_name(project_name)
         project_id = project['id']
         gazu.project.update_project_data(project_id, {'repository_url': url})
-
-        info = QMessageBox()
-        info.setWindowTitle('Set svn url')
-        info.setText('Done')
-        info.setIcon(QMessageBox.Information)
-        info.exec_()
+        if debug is False:
+            info = QMessageBox()
+            info.setWindowTitle('Set svn url')
+            info.setText('Done')
+            info.setIcon(QMessageBox.Information)
+            info.exec_()
+        else:
+            print('Done')
 
 if __name__ == '__main__':
     pass
     project = Project()
-    project.login('https://eaxum.cg-wire.com/api', 'aderemi@eaxum.com', 'testing')
+    project.login('https://eaxum.cg-wire.com/api', 'aderemi@eaxum.com', 'testin', debug=True)
     # set_svn_url('tao', 'isfdfdg')
     # print(gazu.files.build_working_file_path('task'))
     # print(gazu.project.get_project_by_name('tao'))
