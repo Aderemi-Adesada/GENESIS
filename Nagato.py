@@ -109,8 +109,8 @@ class LoginWindow(QMainWindow):
         host = self.host_url.text()
         username = self.username_input.text()
         password = self.password_input.text()
-        project.login(host, username, password, switch=self.switch_window)
-        # project.login('https://eaxum.cg-wire.com/api', 'aderemi@eaxum.com', 'testing', switch= self.switch_window)
+        # project.login(host, username, password, switch=self.switch_window)
+        project.login('https://eaxum.cg-wire.com/api', 'aderemi@eaxum.com', 'testing', switch= self.switch_window)
 
 
 
