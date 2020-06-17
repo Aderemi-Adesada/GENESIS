@@ -3,9 +3,10 @@ from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 from PyQt5.uic import loadUi
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtCore import QPropertyAnimation
+from PyQt5.QtCore import QPropertyAnimation, pyqtSignal, QThread
 from genesis import Project
 import gazu
+import time
 from gazu.exception import MethodNotAllowedException, RouteNotFoundException
 import json
 from requests.exceptions import MissingSchema, InvalidSchema, ConnectionError
@@ -34,11 +35,13 @@ class MainWindow(QMainWindow):
         self.settings_button.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(1))
 
         selected_project = self.project_select.currentText
-        self.gen_project_files.clicked.connect(lambda: project.files_gen(project_name=selected_project(),
-                                                                         blender=self.blender_directory_input.text(),
-                                                                         mount_point=self.project_mounting_point_input.text()))
-        self.access_control.clicked.connect(lambda: project.svn_config(selected_project(),
-                                                                      self.svn_parent_path_input.text()))
+        self.gen_project_files.clicked.connect(self.start_file_gen)
+        # self.gen_project_files.clicked.connect(lambda: project.files_gen(project_name=selected_project(),
+        #                                                                  blender=self.blender_directory_input.text(),
+        #                                                                  mount_point=self.project_mounting_point_input.text()))
+        self.access_control.clicked.connect(self.start_svn_config)
+        # self.access_control.clicked.connect(lambda: project.svn_config(selected_project(),
+        #                                                               self.svn_parent_path_input.text()))
         self.set_file_tree_button.clicked.connect(lambda: project.set_file_tree(project_name=selected_project(),
                                                                         file_tree_name=self.file_tree_select.currentText()))
         self.new_file_tree_button.clicked.connect(project.new_file_tree)
@@ -97,8 +100,102 @@ class MainWindow(QMainWindow):
         with open('settings.json', 'w') as data:
             json.dump(settings, data, indent=2)
 
-class ProgressBar():
-    sg
+    def start_file_gen(self):
+        self.access_control.setEnabled(False)
+        self.gen_project_files.setEnabled(False)
+        self.file_gen_thread = FileGen(project=self.project_select.currentText(),
+                              blender=self.blender_directory_input.text(),
+                              mount=self.project_mounting_point_input.text()
+                              )
+        self.file_gen_thread.change_value.connect(self.set_progress_val)
+        self.file_gen_thread.message.connect(self.message_box)
+        self.file_gen_thread.start()
+        self.access_control.setEnabled(True)
+        self.gen_project_files.setEnabled(True)
+
+    def start_svn_config(self):
+        self.access_control.setEnabled(False)
+        self.gen_project_files.setEnabled(False)
+        self.svn_thread = SvnConfig(project=self.project_select.currentText(),
+                                    svn_path=self.svn_parent_path_input.text(),
+                                    svn_button=self.access_control,
+                                    file_button=self.gen_project_files)
+        self.svn_thread.change_value.connect(self.set_progress_val)
+        self.svn_thread.message.connect(self.message_box)
+        self.svn_thread.start()
+        self.access_control.setEnabled(True)
+        self.gen_project_files.setEnabled(True)
+
+    def message_box(self, val):
+        def critical_err(message, title = 'Critical Error'):
+            error = QMessageBox()
+            error.setWindowTitle(title)
+            error.setText(message)
+            error.setIcon(QMessageBox.Critical)
+            error.exec_()
+        def infomation(message, title= 'Info'):
+            info = QMessageBox()
+            info.setWindowTitle(title)
+            info.setText(message)
+            info.setIcon(QMessageBox.Information)
+            info.exec_()
+        if val == 'Done':
+            infomation('Done')
+        elif val == 'Blender executable do not exist':
+            critical_err('Blender executable do not exist', title= 'Project File Generation')
+        elif val == 'project already exist in stated directory':
+            infomation('project already exist in stated directory', title='Project File Generation')
+        elif val == 'invalid mount point':
+            critical_err('invalid mount point', title='Project File Generation')
+        elif val == 'Parameter Exception':
+            critical_err('Parameter Exception')
+        elif val == 'svn path do not exist':
+            critical_err('svn path do not exist', title='Access Control Generation Error')
+
+    def set_progress_val(self, val):
+        self.progress_bar.setValue(val)
+
+
+class FileGen(QThread):
+    change_value = pyqtSignal(int)
+    message = pyqtSignal(str)
+
+    def __init__(self, project, blender, mount):
+        super(FileGen, self).__init__()
+        self.project = project
+        self.blender = blender
+        self.mount = mount
+
+    def run(self):
+        project.files_gen(project_name=self.project,
+                          blender=self.blender,
+                          mount_point=self.mount,
+                          progress_bar=self.change_value,
+                          message_box=self.message)
+        # project.test(self.change_value)
+
+
+class SvnConfig(QThread):
+    change_value = pyqtSignal(int)
+    message = pyqtSignal(str)
+
+    def __init__(self, project, svn_path, svn_button, file_button):
+        super(SvnConfig, self).__init__()
+        self.project = project
+        self.svn_path = svn_path
+        self.svn_button =svn_button
+        self.file_button = file_button
+
+    def run(self):
+        self.svn_button.setEnabled(False)
+        self.file_button.setEnabled(False)
+        project.svn_config(project_name=self.project,
+                          svn_parent_path= self.svn_path,
+                          progress_bar=self.change_value,
+                          message_box=self.message)
+        self.svn_button.setEnabled(True)
+        self.file_button.setEnabled(True)
+
 
 class LoginWindow(QMainWindow):
     switch_window = QtCore.pyqtSignal()

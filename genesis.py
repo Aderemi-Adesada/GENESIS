@@ -15,6 +15,17 @@ class Project():
     def __init__(self):
         self.tasks_info = []
 
+    def test(self, progress_bar=None):
+        if progress_bar != None:
+            progress = 0
+            for i in range(19):
+                progress += ((1)/len(range(19))) * 100
+                import time
+                time.sleep(0.5)
+                progress_bar.emit(progress)
+            progress = 0
+            progress_bar.emit(progress)
+
     def login(self, host, username, password, switch=None, debug=False):
         switch_window = QtCore.pyqtSignal()
         try:
@@ -144,7 +155,8 @@ class Project():
             pass
         os.remove(asset_file + '1')
 
-    def task_info_gen(self, project_name):
+    def task_info_gen(self, project_name, progress_bar, message_box):
+        progress = 0
         project = gazu.project.get_project_by_name(project_name)
         project_id = project['id']
         shots = gazu.shot.all_shots_for_project(project_id)
@@ -233,27 +245,26 @@ class Project():
                                  'assignees': assignees, 'dependencies': dependencies}
                     info_output.append(task_info)
         print('here')
+        progress = 10
         try:
             for asset in assets:
                 asset_task_info(asset, self.tasks_info)
+                progress += ((1) / len(assets)) * 35
+                progress_bar.emit(progress)
             for shot in shots:
                 shot_task_info(shot, self.tasks_info)
+                progress += ((1) / len(shots)) * 35
+                progress_bar.emit(progress)
         except gazu.exception.ParameterException as e:
-            error = QMessageBox()
-            error.setWindowTitle('Access Control Generation Error')
-            error.setText(str(e))
-            error.setIcon(QMessageBox.Critical)
-            error.exec_()
+            message_box.emit('Parameter Exception')
+            # error = QMessageBox()
+            # error.setWindowTitle('Access Control Generation Error')
+            # error.setText(str(e))
+            # error.setIcon(QMessageBox.Critical)
+            # error.exec_()
 
-        #todo
-        # stores infos to project details with is to much
-        # create a dedicated table for the info
-
-        # gazu.project.update_project_data(project_id, {'tasks_details': project_tasks_info})
-        # with open(f'{project_name}_tasks_info.json', 'w') as data:
-        #     json.dump(project_tasks_info, data, indent=2)
-
-    def svn_config(self, project_name, svn_parent_path, debug=False):
+    def svn_config(self, project_name, svn_parent_path, progress_bar=None, message_box = None, debug=False):
+        progress = 80
         def set_write_permissions(task_info):
             if task_info['svn_dir'] in config:
                 assignees = task_info['assignees']
@@ -279,53 +290,51 @@ class Project():
 
         # todo write authz file to svn server
         if os.path.isdir(f'{svn_parent_path}/{project_name}'):
-            self.task_info_gen(project_name)
+            self.task_info_gen(project_name, progress_bar, message_box)
             task_infos = self.tasks_info
             config = ConfigParser()
 
             for task_info in task_infos:
                 set_write_permissions(task_info)
+                progress += ((1) / len(task_infos)) * 10
+                progress_bar.emit(progress)
             for task_info in task_infos:
                 set_read_permission(task_info)
+                progress += ((1) / len(task_infos)) * 10
+                progress_bar.emit(progress)
 
             with open(f'{svn_parent_path}/{project_name}/conf/authz', 'w') as file:
                 config.write(file)
 
-
-            # info report
-            info = QMessageBox()
-            info.setWindowTitle('Access Control Generation')
-            info.setText('Finished')
-            info.setIcon(QMessageBox.Information)
-            info.exec_()
+            message_box.emit('Done')
+            progress = 0
+            progress_bar.emit(progress)
         else:
             if debug is False:
-                error = QMessageBox()
-                error.setWindowTitle('Access Control Generation Error')
-                error.setText('svn path do not exist')
-                error.setIcon(QMessageBox.Critical)
-                error.exec_()
+                progress = 0
+                progress_bar.emit(progress)
+                message_box.emit('svn path do not exist')
             else:
                 print('svn path do not exist')
 
     def files_gen(self, project_name, blender,
+                  progress_bar=None,
+                  message_box = None,
                   mount_point='C:' + os.environ.get('homepath').replace("\\", "/") + '/projects/',
                   debug = False):
         project = gazu.project.get_project_by_name(project_name)
         project_id = project['id']
         project_path = mount_point +'/'+ project_name
-
+        progress = 0
         try:
             if not os.path.isdir(mount_point):
                 # checking if mount point exist
                 os.mkdir(mount_point)
         except FileNotFoundError:
             if debug is False:
-                error = QMessageBox()
-                error.setWindowTitle('Project File Generation')
-                error.setText('invalid mount point')
-                error.setIcon(QMessageBox.Critical)
-                error.exec_()
+                progress = 0
+                progress_bar.emit(progress)
+                message_box.emit('invalid mount point')
             else:
                 print('invalid mount point')
 
@@ -336,6 +345,8 @@ class Project():
                 chars_type_id = None
                 props_type_id = None
                 envs_type_id = None
+                progress = 10
+                progress_bar.emit(progress)
                 for asset_type in asset_types:
                     if asset_type['name'] == 'chars':
                         chars_type_id = asset_type['id']
@@ -343,45 +354,54 @@ class Project():
                         props_type_id = asset_type['id']
                     if asset_type['name'] == 'envs':
                         envs_type_id = asset_type['id']
+                    progress += ((1) / len(asset_types)) * 10
+                    progress_bar.emit(progress)
 
                 if chars_type_id is not None:
                     chars = gazu.asset.all_assets_for_project_and_type(project_id, chars_type_id)
                     for char in chars:
                         chars_path = project_path + '/lib/' + 'chars/'
                         self.asset_gen(char, chars_path, blender)
+                        progress += ((1) / len(chars)) * 10
+                        progress_bar.emit(progress)
 
                 if envs_type_id is not None:
                     envs = gazu.asset.all_assets_for_project_and_type(project_id, envs_type_id)
                     for env in envs:
                         envs_path = project_path + '/lib/' + 'envs/'
                         self.asset_gen(env, envs_path, blender)
+                        progress += ((1) / len(envs)) * 10
+                        progress_bar.emit(progress)
 
                 if props_type_id is not None:
                     props = gazu.asset.all_assets_for_project_and_type(project_id, props_type_id)
                     for prop in props:
                         props_path = project_path + '/lib/' + 'props/'
                         self.asset_gen(prop, props_path, blender)
+                        progress += ((1) / len(props)) * 10
+                        progress_bar.emit(progress)
 
                 # creates scenes, shots, and shot files
                 scenes = gazu.context.all_sequences_for_project(project_id)
                 for scene in scenes:
                     self.scene_gen(scene, project_path, blender)
+                    progress += ((1) / len(scenes)) * 50
+                    progress_bar.emit(progress)
+                progress = 0
+                progress_bar.emit(progress)
+                message_box.emit('Done')
             else:
                 if debug is False:
-                    error = QMessageBox()
-                    error.setWindowTitle('Project File Generation')
-                    error.setText('Blender executable do not exist')
-                    error.setIcon(QMessageBox.Critical)
-                    error.exec_()
+                    progress = 0
+                    progress_bar.emit(progress)
+                    message_box.emit('Blender executable do not exist')
                 else:
                     print('Blender executable do not exist')
         else:
             if debug is False:
-                info = QMessageBox()
-                info.setWindowTitle('Project File Generation')
-                info.setText('project already exist in stated directory')
-                info.setIcon(QMessageBox.Information)
-                info.exec_()
+                progress = 0
+                progress_bar.emit(progress)
+                message_box.emit('project already exist in stated directory')
             else:
                 print('project already exist in stated directory')
 
