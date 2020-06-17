@@ -4,13 +4,15 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 from PyQt5.uic import loadUi
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QPropertyAnimation
-from genesis import project_files_gen, create_svn_config, set_file_tree, new_file_tree, set_svn_url
+from genesis import Project
 import gazu
 from gazu.exception import MethodNotAllowedException, RouteNotFoundException
 import json
 from requests.exceptions import MissingSchema, InvalidSchema, ConnectionError
 import resources
 import os
+
+project = Project()
 settings_dir = 'settings.json'
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -102,7 +104,7 @@ class LoginWindow(QMainWindow):
     def __init__(self):
         super(LoginWindow, self).__init__()
         loadUi('login.ui', self)
-        # self.login_button.clicked.connect(self.login)
+        self.login_button.clicked.connect(self.login)
 
         self.login_button.clicked.connect(self.login)
 
