@@ -86,7 +86,7 @@ background: url(:/img/img/bg_1.png);
 }
 
 QLineEdit{
-font-size:17px;
+font-size:26px;
 background:transparent;
 border:none;
 color: white;
@@ -159,7 +159,7 @@ QComboBox {
 	selection-color: blue;
 	font-size: 26px;
     border: 2px solid rgb(68, 124, 144);
-    border-radius: 3px;
+    border-radius: 12px;
     padding: 1px 18px 1px 3px;
 }
 QComboBox:on { /* shift the text when the popup opens */
@@ -174,8 +174,8 @@ QComboBox::drop-down {
     subcontrol-position: top right;
     width: 40px;
     border-left-width: 0px;
-    border-top-right-radius: 1px;
-    border-bottom-right-radius: 1px;
+    border-top-right-radius: 9px;
+    border-bottom-right-radius: 9px;
 }
 
 QComboBox::down-arrow {
@@ -507,7 +507,7 @@ font-size:20px</string>
       <item>
        <widget class="QStackedWidget" name="stackedWidget">
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="project_page">
          <layout class="QGridLayout" name="gridLayout">
@@ -573,12 +573,20 @@ font-size:20px</string>
                       <property name="text">
                        <string>New file tree</string>
                       </property>
+                      <property name="icon">
+                       <iconset resource="resources.qrc">
+                        <normaloff>:/icons/icons/24x24/file_tree.png</normaloff>:/icons/icons/24x24/file_tree.png</iconset>
+                      </property>
                      </widget>
                     </item>
                     <item>
                      <widget class="QPushButton" name="set_file_tree_button">
                       <property name="text">
                        <string>Set File Tree</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="resources.qrc">
+                        <normaloff>:/icons/icons/24x24/file_tree.png</normaloff>:/icons/icons/24x24/file_tree.png</iconset>
                       </property>
                      </widget>
                     </item>
@@ -648,8 +656,8 @@ font-size:20px</string>
                 <string>Generate Access Control </string>
                </property>
                <property name="icon">
-                <iconset>
-                 <normaloff>:/icons/icons/24x24/cil-lock-unlocked.png</normaloff>:/icons/icons/24x24/cil-lock-unlocked.png</iconset>
+                <iconset resource="resources.qrc">
+                 <normaloff>:/icons/icons/subversion.png</normaloff>:/icons/icons/subversion.png</iconset>
                </property>
               </widget>
              </item>
@@ -678,8 +686,8 @@ font-size:20px</string>
                 <string>generate project files</string>
                </property>
                <property name="icon">
-                <iconset>
-                 <normaloff>:/icons/icons/24x24/cil-folder.png</normaloff>:/icons/icons/24x24/cil-folder.png</iconset>
+                <iconset resource="resources.qrc">
+                 <normaloff>:/icons/icons/24x24/cil-file.png</normaloff>:/icons/icons/24x24/cil-file.png</iconset>
                </property>
               </widget>
              </item>
@@ -719,6 +727,10 @@ font-size:20px</string>
                      <widget class="QPushButton" name="set_svn_button">
                       <property name="text">
                        <string>Set SVN url</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="resources.qrc">
+                        <normaloff>:/icons/icons/subversion.png</normaloff>:/icons/icons/subversion.png</iconset>
                       </property>
                      </widget>
                     </item>
@@ -880,6 +892,10 @@ font-size:20px</string>
                 <widget class="QPushButton" name="save_settings_button">
                  <property name="text">
                   <string>Save Settings</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="resources.qrc">
+                   <normaloff>:/icons/icons/24x24/cil-save.png</normaloff>:/icons/icons/24x24/cil-save.png</iconset>
                  </property>
                 </widget>
                </item>
