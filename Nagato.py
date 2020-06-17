@@ -104,9 +104,10 @@ class MainWindow(QMainWindow):
         self.access_control.setEnabled(False)
         self.gen_project_files.setEnabled(False)
         self.file_gen_thread = FileGen(project=self.project_select.currentText(),
-                              blender=self.blender_directory_input.text(),
-                              mount=self.project_mounting_point_input.text()
-                              )
+                                       blender=self.blender_directory_input.text(),
+                                       mount=self.project_mounting_point_input.text(),
+                                       svn_button = self.access_control,
+                                       file_button = self.gen_project_files)
         self.file_gen_thread.change_value.connect(self.set_progress_val)
         self.file_gen_thread.message.connect(self.message_box)
         self.file_gen_thread.start()
@@ -160,19 +161,24 @@ class FileGen(QThread):
     change_value = pyqtSignal(int)
     message = pyqtSignal(str)
 
-    def __init__(self, project, blender, mount):
+    def __init__(self, project, blender, mount, svn_button, file_button):
         super(FileGen, self).__init__()
         self.project = project
         self.blender = blender
         self.mount = mount
+        self.svn_button = svn_button
+        self.file_button = file_button
 
     def run(self):
+        self.svn_button.setEnabled(False)
+        self.file_button.setEnabled(False)
         project.files_gen(project_name=self.project,
                           blender=self.blender,
                           mount_point=self.mount,
                           progress_bar=self.change_value,
                           message_box=self.message)
-        # project.test(self.change_value)
+        self.svn_button.setEnabled(True)
+        self.file_button.setEnabled(True)
 
 
 class SvnConfig(QThread):
