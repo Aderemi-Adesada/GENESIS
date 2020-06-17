@@ -431,7 +431,19 @@ class Project():
                 print('invalid json format')
 
     def new_file_tree(self):
-        ctypes.windll.shell32.ShellExecuteW(None, "open", 'notepad', 'C:/users/tanjiro/projects/genesis/file_trees/default.json', None, 1)
+        # 'C:/users/tanjiro/projects/genesis/file_trees/default.json'
+        ctypes.windll.shell32.ShellExecuteW(None, "open", 'notepad',
+                                            'file_trees/default.json', None, 1)
+
+    def open_blender(self, blender):
+        if os.path.isfile(blender):
+            ctypes.windll.shell32.ShellExecuteW(None, "open", blender, '', None, 1)
+        else:
+            error = QMessageBox()
+            error.setWindowTitle('open blender')
+            error.setText('blender path not existing')
+            error.setIcon(QMessageBox.Critical)
+            error.exec_()
 
     def svn_url(self, project_name, url, debug = False):
         project = gazu.project.get_project_by_name(project_name)
@@ -448,10 +460,4 @@ class Project():
 
 if __name__ == '__main__':
     pass
-    project = Project()
-    project.login('https://eaxum.cg-wire.com/api', 'aderemi@eaxum.com', 'testin', debug=True)
-    # set_svn_url('tao', 'isfdfdg')
-    # print(gazu.files.build_working_file_path('task'))
-    # print(gazu.project.get_project_by_name('tao'))
-    # project_files_gen('tao', 'C:/Program Files/Blender Foundation/Blender 2.83/blender.exe', 'C:/users/tanjio/projects/task' )
 

@@ -45,6 +45,7 @@ class MainWindow(QMainWindow):
         self.set_file_tree_button.clicked.connect(lambda: project.set_file_tree(project_name=selected_project(),
                                                                         file_tree_name=self.file_tree_select.currentText()))
         self.new_file_tree_button.clicked.connect(project.new_file_tree)
+        self.open_blender.clicked.connect(lambda: project.open_blender(self.blender_directory_input.text()))
         # self.project_task_details.clicked.connect(lambda: project_task_info_gen(str(selected_project())))
         self.save_settings_button.clicked.connect(self.setings)
         self.set_svn_button.clicked.connect(lambda:project.svn_url(project_name=selected_project(),
@@ -214,8 +215,7 @@ class LoginWindow(QMainWindow):
         host = self.host_url.text()
         username = self.username_input.text()
         password = self.password_input.text()
-        # project.login(host, username, password, switch=self.switch_window)
-        project.login('https://eaxum.cg-wire.com/api', 'aderemi@eaxum.com', 'testing', switch= self.switch_window)
+        project.login(host, username, password, switch=self.switch_window)
 
 
 
