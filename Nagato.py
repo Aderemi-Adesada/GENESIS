@@ -14,11 +14,11 @@ import resources
 import os
 
 project = Project()
-settings_dir = 'settings.json'
+settings_dir = 'data/settings.json'
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-        loadUi('genesis.ui', self)
+        loadUi('data/genesis.ui', self)
         self.stackedWidget.setCurrentIndex(0)
         with open(settings_dir, 'r') as data:
             settings = json.load(data)
@@ -36,18 +36,12 @@ class MainWindow(QMainWindow):
 
         selected_project = self.project_select.currentText
         self.gen_project_files.clicked.connect(self.start_file_gen)
-        # self.gen_project_files.clicked.connect(lambda: project.files_gen(project_name=selected_project(),
-        #                                                                  blender=self.blender_directory_input.text(),
-        #                                                                  mount_point=self.project_mounting_point_input.text()))
         self.access_control.clicked.connect(self.start_svn_config)
-        # self.access_control.clicked.connect(lambda: project.svn_config(selected_project(),
-        #                                                               self.svn_parent_path_input.text()))
         self.set_file_tree_button.clicked.connect(lambda: project.set_file_tree(project_name=selected_project(),
                                                                         file_tree_name=self.file_tree_select.currentText()))
         self.new_file_tree_button.clicked.connect(project.new_file_tree)
         self.open_blender.clicked.connect(lambda: project.open_blender(self.blender_directory_input.text()))
-        # self.project_task_details.clicked.connect(lambda: project_task_info_gen(str(selected_project())))
-        self.save_settings_button.clicked.connect(self.setings)
+        self.save_settings_button.clicked.connect(self.settings)
         self.set_svn_button.clicked.connect(lambda:project.svn_url(project_name=selected_project(),
                                                                url=self.svn_url_input.text()))
 
@@ -91,14 +85,14 @@ class MainWindow(QMainWindow):
         for project in all_open_projects:
             self.project_select.addItem(project['name'])
 
-    def setings(self):
+    def settings(self):
         mount_point = self.project_mounting_point_input.text()
         svn_parent_path = self.svn_parent_path_input.text()
         blender_directory = self.blender_directory_input.text()
         settings = {'mount point': mount_point,
                     'svn parent path': svn_parent_path,
                     'blender directory': blender_directory}
-        with open('settings.json', 'w') as data:
+        with open(settings_dir, 'w') as data:
             json.dump(settings, data, indent=2)
 
     def start_file_gen(self):
@@ -142,17 +136,17 @@ class MainWindow(QMainWindow):
             info.setIcon(QMessageBox.Information)
             info.exec_()
         if val == 'Done':
-            infomation('Done')
+            infomation(val)
         elif val == 'Blender executable do not exist':
-            critical_err('Blender executable do not exist', title= 'Project File Generation')
+            critical_err(val, title= 'Project File Generation')
         elif val == 'project already exist in stated directory':
-            infomation('project already exist in stated directory', title='Project File Generation')
+            infomation(val, title='Project File Generation')
         elif val == 'invalid mount point':
-            critical_err('invalid mount point', title='Project File Generation')
-        elif val == 'Parameter Exception':
-            critical_err('Parameter Exception')
+            critical_err(val, title='Project File Generation')
+        elif val[0:19] == 'Parameter Exception':
+            critical_err(val)
         elif val == 'svn path do not exist':
-            critical_err('svn path do not exist', title='Access Control Generation Error')
+            critical_err(val, title='Access Control Generation Error')
 
     def set_progress_val(self, val):
         self.progress_bar.setValue(val)
@@ -209,7 +203,7 @@ class LoginWindow(QMainWindow):
 
     def __init__(self):
         super(LoginWindow, self).__init__()
-        loadUi('login.ui', self)
+        loadUi('data/login.ui', self)
         self.login_button.clicked.connect(self.login)
     def login(self):
         host = self.host_url.text()

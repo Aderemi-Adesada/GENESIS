@@ -8,23 +8,11 @@ from PyQt5 import QtCore
 from PyQt5.QtWidgets import QMessageBox
 from gazu.exception import MethodNotAllowedException, RouteNotFoundException
 from requests.exceptions import MissingSchema, InvalidSchema, ConnectionError
-# from pynput.keyboard import
 
 
 class Project():
     def __init__(self):
         self.tasks_info = []
-
-    def test(self, progress_bar=None):
-        if progress_bar != None:
-            progress = 0
-            for i in range(19):
-                progress += ((1)/len(range(19))) * 100
-                import time
-                time.sleep(0.5)
-                progress_bar.emit(progress)
-            progress = 0
-            progress_bar.emit(progress)
 
     def login(self, host, username, password, switch=None, debug=False):
         switch_window = QtCore.pyqtSignal()
@@ -110,17 +98,16 @@ class Project():
         for shot in scene_shots:
             shot_data.clear()
             shot_data.append(shot['data'])
-            with open('shot_data.json', 'w') as s_data:
+            with open('data/shot_data.json', 'w') as s_data:
                 json.dump(shot_data, s_data, indent=2)
             shot_name = shot['name']
             shot_path = project_path + '/scenes/' + scene_name + '/' + shot_name
             shot_file_tasks = ['lighting', 'anim', 'layout']
             shot_file_name = scene_name + '_' + shot_name + '_'
             os.mkdir(shot_path)
-            # shutil.copy('./genesis.blend', shot_path)
 
             for shot_file_task in shot_file_tasks:
-                shutil.copy('./genesis.blend', shot_path)
+                shutil.copy('./data/genesis.blend', shot_path)
                 shot_file_name_task = shot_path + '/' + shot_file_name + shot_file_task + '.blend'
                 os.rename(shot_path + '/genesis.blend', shot_file_name_task)
                 casts = gazu.casting.get_shot_casting(shot)
@@ -135,10 +122,10 @@ class Project():
                     if cast['asset_type_name'] == 'props':
                         cast_data.append(
                             {'filepath': props_path + cast['asset_name'] + '.blend', 'filename': cast['asset_name']})
-                with open('cast_data.json', 'w') as data:
+                with open('data/cast_data.json', 'w') as data:
                     json.dump(cast_data, data, indent=2)
                 ctypes.windll.shell32.ShellExecuteW(None, "open", blender,
-                                                    f'-b --factory-startup "{shot_file_name_task}" --python "./scenes_setup.py"',
+                                                    f'-b --factory-startup "{shot_file_name_task}" --python "./scripts/scenes_setup.py"',
                                                     None, 1)
                 while os.path.isfile(shot_file_name_task + '1') == False:
                     pass
@@ -147,10 +134,10 @@ class Project():
     def asset_gen(self, asset, asset_path, blender):
         asset_name = asset['name']
         asset_file = asset_path + '/' + asset_name + '.blend'
-        shutil.copy('./genesis.blend', asset_path)
+        shutil.copy('./data/genesis.blend', asset_path)
         os.rename(asset_path + '/genesis.blend', asset_file)
         ctypes.windll.shell32.ShellExecuteW(None, "open", blender,
-                                            f' -b --factory-startup "{asset_file}" --python "./setup.py"', None, 1)
+                                            f' -b --factory-startup "{asset_file}" --python "./scripts/setup.py"', None, 1)
         while os.path.isfile(asset_file + '1') == False:
             pass
         os.remove(asset_file + '1')
@@ -161,7 +148,6 @@ class Project():
         project_id = project['id']
         shots = gazu.shot.all_shots_for_project(project_id)
         assets = gazu.asset.all_assets_for_project(project_id)
-        kitsu_task_types = gazu.task.all_task_types()
         # project_tasks_info = []
 
         # generates dependency info of tasks
@@ -256,12 +242,7 @@ class Project():
                 progress += ((1) / len(shots)) * 35
                 progress_bar.emit(progress)
         except gazu.exception.ParameterException as e:
-            message_box.emit('Parameter Exception')
-            # error = QMessageBox()
-            # error.setWindowTitle('Access Control Generation Error')
-            # error.setText(str(e))
-            # error.setIcon(QMessageBox.Critical)
-            # error.exec_()
+            message_box.emit('Parameter Exception: ' + str(e))
 
     def svn_config(self, project_name, svn_parent_path, progress_bar=None, message_box = None, debug=False):
         progress = 80
@@ -431,7 +412,6 @@ class Project():
                 print('invalid json format')
 
     def new_file_tree(self):
-        # 'C:/users/tanjiro/projects/genesis/file_trees/default.json'
         ctypes.windll.shell32.ShellExecuteW(None, "open", 'notepad',
                                             'file_trees/default.json', None, 1)
 

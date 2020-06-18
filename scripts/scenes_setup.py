@@ -10,7 +10,7 @@ bpy.context.view_layer.active_layer_collection = bpy.context.view_layer.layer_co
 scene_name = name[:-6].split('_')
 bpy.data.scenes['Scene'].name = scene_name[0] + '_' + scene_name[1]
 
-with open('cast_data.json') as data:
+with open('data/cast_data.json') as data:
     assets = json.load(data)
 
 for i in assets:
@@ -27,7 +27,7 @@ for i in assets:
         filename=file_name,
         directory=directory)
 
-with open('shot_data.json') as s_data:
+with open('data/shot_data.json') as s_data:
     shot_metadata = json.load(s_data)
 if shot_metadata[0] == None:
     frame_rate = 24
@@ -101,13 +101,7 @@ elif scene_name[2] == 'lighting':
     lighting_preset()
 else:
     pass
-##
-# bpy.context.scene.render.engine = 'CYCLES'
-# bpy.context.scene.render.engine = 'BLENDER_EEVEE'
-# bpy.context.scene.render.engine = 'BLENDER_WORKBENCH'
-# bpy.context.scene.render.filepath
-# bpy.context.scene.render.image_settings.file_format = 'PNG'
-# bpy.context.scene.render.image_settings.file_format = 'FFMPEG'
+
 bpy.context.scene.cycles.device = 'GPU'
 bpy.ops.file.make_paths_relative()
 bpy.ops.wm.save_mainfile()
