@@ -411,10 +411,6 @@ class Project():
             else:
                 print('invalid json format')
 
-    def new_file_tree(self):
-        ctypes.windll.shell32.ShellExecuteW(None, "open", 'notepad',
-                                            'file_trees/default.json', None, 1)
-
     def open_blender(self, blender):
         if os.path.isfile(blender):
             ctypes.windll.shell32.ShellExecuteW(None, "open", blender, '', None, 1)

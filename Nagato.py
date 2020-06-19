@@ -1,30 +1,26 @@
 import sys
-from PyQt5.QtCore import pyqtSlot
+# from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 from PyQt5.uic import loadUi
-from PyQt5 import QtCore, QtWidgets
+from PyQt5 import QtCore#, QtWidgets
 from PyQt5.QtCore import QPropertyAnimation, pyqtSignal, QThread
 from genesis import Project
 import gazu
-import time
-from gazu.exception import MethodNotAllowedException, RouteNotFoundException
 import json
-from requests.exceptions import MissingSchema, InvalidSchema, ConnectionError
 import resources
 import os
 
 project = Project()
 settings_dir = 'data/settings.json'
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         loadUi('data/genesis.ui', self)
         self.stackedWidget.setCurrentIndex(0)
-        with open(settings_dir, 'r') as data:
-            settings = json.load(data)
-        self.project_mounting_point_input.setText(settings['mount point'])
-        self.svn_parent_path_input.setText(settings['svn parent path'])
-        self.blender_directory_input.setText(settings['blender directory'])
+        self.load_settings()
+        self.load_file_tree()
         self.refresh()
         self.refresh_button.clicked.connect(self.refresh)
 
@@ -33,15 +29,17 @@ class MainWindow(QMainWindow):
         self.menu_button.clicked.connect(lambda: self.toggleMenu(220, True))
         self.project_button.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(0))
         self.settings_button.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(1))
+        self.file_tree_button.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(2))
 
         selected_project = self.project_select.currentText
         self.gen_project_files.clicked.connect(self.start_file_gen)
         self.access_control.clicked.connect(self.start_svn_config)
         self.set_file_tree_button.clicked.connect(lambda: project.set_file_tree(project_name=selected_project(),
-                                                                        file_tree_name=self.file_tree_select.currentText()))
-        self.new_file_tree_button.clicked.connect(project.new_file_tree)
+                                                                                file_tree_name=self.file_tree_select.currentText()))
+        self.edit_custom_file_tree_button.clicked.connect(lambda: self.stackedWidget.setCurrentIndex(2))
         self.open_blender.clicked.connect(lambda: project.open_blender(self.blender_directory_input.text()))
         self.save_settings_button.clicked.connect(self.settings)
+        self.save_file_tree_button.clicked.connect(self.file_tree_setting)
         self.set_svn_button.clicked.connect(lambda:project.svn_url(project_name=selected_project(),
                                                                url=self.svn_url_input.text()))
 
@@ -79,6 +77,30 @@ class MainWindow(QMainWindow):
         self.project_list()
         self.file_tree_list()
 
+    def load_settings(self):
+        with open(settings_dir, 'r') as data:
+            settings = json.load(data)
+        self.project_mounting_point_input.setText(settings['mount point'])
+        self.svn_parent_path_input.setText(settings['svn parent path'])
+        self.blender_directory_input.setText(settings['blender directory'])
+
+    def load_file_tree(self):
+        with open('file_trees/custom.json', 'r') as data:
+            file_tree = json.load(data)
+        #ROOT
+        self.file_tree_root_input.setText(file_tree['working']['root'])
+        #FOLDER PATH
+        self.shot_path_input.setText(file_tree['working']['folder_path']['shot'])
+        self.asset_path_input.setText(file_tree['working']['folder_path']['asset'])
+        self.sequence_path_input.setText(file_tree['working']['folder_path']['sequence'])
+        self.scenes_path_input.setText(file_tree['working']['folder_path']['scene'])
+        #FILE NAME
+        self.shot_name_input.setText(file_tree['working']['file_name']['shot'])
+        self.asset_name_input.setText(file_tree['working']['file_name']['asset'])
+        self.sequence_name_input.setText(file_tree['working']['file_name']['sequence'])
+        self.scenes_name_input.setText(file_tree['working']['file_name']['scene'])
+
+
     def project_list(self):
         all_open_projects = gazu.project.all_open_projects()
         self.project_select.clear()
@@ -94,6 +116,36 @@ class MainWindow(QMainWindow):
                     'blender directory': blender_directory}
         with open(settings_dir, 'w') as data:
             json.dump(settings, data, indent=2)
+
+    def file_tree_setting(self):
+        print('sfvsfsvfs')
+        root = self.file_tree_root_input.text()
+        shot_path = self.shot_path_input.text()
+        asset_path = self.asset_path_input.text()
+        sequence_path = self.sequence_path_input.text()
+        scenes_path = self.scenes_path_input.text()
+        shot_name = self.shot_name_input.text()
+        asset_name = self.asset_name_input.text()
+        sequence_name = self.sequence_name_input.text()
+        scenes_name = self.scenes_name_input.text()
+        with open('file_trees/custom.json', 'r') as data:
+            file_tree = json.load(data)
+        #ROOT
+        file_tree['working']['root'] = root
+        #FOLDER PATHS
+        file_tree['working']['folder_path']['shot'] = shot_path
+        file_tree['working']['folder_path']['asset'] = asset_path
+        file_tree['working']['folder_path']['sequence'] = sequence_path
+        file_tree['working']['folder_path']['scene'] = scenes_path
+        #FILE_NAMES
+        file_tree['working']['file_name']['shot'] = shot_name
+        file_tree['working']['file_name']['asset'] = asset_name
+        file_tree['working']['file_name']['sequence'] = sequence_name
+        file_tree['working']['file_name']['scene'] = scenes_name
+
+        print(file_tree)
+        with open('file_trees/custom.json', 'w') as data:
+            json.dump(file_tree, data, indent=2)
 
     def start_file_gen(self):
         self.access_control.setEnabled(False)
@@ -209,7 +261,8 @@ class LoginWindow(QMainWindow):
         host = self.host_url.text()
         username = self.username_input.text()
         password = self.password_input.text()
-        project.login(host, username, password, switch=self.switch_window)
+        # project.login(host, username, password, switch=self.switch_window)
+        project.login('https://eaxum.cg-wire.com/api', 'aderemi@eaxum.com', 'testing', switch=self.switch_window)
 
 
 

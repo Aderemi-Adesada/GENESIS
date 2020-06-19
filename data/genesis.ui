@@ -7,26 +7,26 @@
     <x>0</x>
     <y>0</y>
     <width>740</width>
-    <height>600</height>
+    <height>850</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>740</width>
-    <height>600</height>
+    <height>850</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>740</width>
-    <height>600</height>
+    <height>850</height>
    </size>
   </property>
   <property name="windowTitle">
    <string>Nagato</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources.qrc">
+   <iconset resource="../resources.qrc">
     <normaloff>:/img/icons/eaxum_icon.png</normaloff>:/img/icons/eaxum_icon.png</iconset>
   </property>
   <property name="styleSheet">
@@ -77,11 +77,18 @@ border-radius: 25px;
 background: black;
 border-radius: 25px;
 }
+#file_tree_wrapper{
+background: black;
+border-radius: 25px;
+}
 
 #project_page{
 background: url(:/img/img/bg_1.png);
 }
 #settings_page{
+background: url(:/img/img/bg_1.png);
+}
+#file_tree_page{
 background: url(:/img/img/bg_1.png);
 }
 
@@ -502,12 +509,78 @@ font-size:20px</string>
           </item>
          </layout>
         </widget>
+        <widget class="QWidget" name="horizontalLayoutWidget_3">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>190</y>
+           <width>160</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_11">
+          <item>
+           <widget class="QPushButton" name="file_tree_button">
+            <property name="maximumSize">
+             <size>
+              <width>40</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton{
+		background-position: center;
+		background-repeat: no-reperat;
+		border: none;
+		background-color: black;
+}
+QPushButton:hover {
+	background-color: rgb(33, 37, 43);
+}
+QPushButton:pressed {	
+	background-color: rgb(85, 170, 255);
+}</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="../resources.qrc">
+              <normaloff>:/icons/icons/24x24/file_tree.png</normaloff>:/icons/icons/24x24/file_tree.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>16</width>
+              <height>16</height>
+             </size>
+            </property>
+            <property name="autoRepeat">
+             <bool>false</bool>
+            </property>
+            <property name="flat">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_4">
+            <property name="styleSheet">
+             <string notr="true">color:white;
+font-size:20px</string>
+            </property>
+            <property name="text">
+             <string>File Tree</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </widget>
       </item>
       <item>
        <widget class="QStackedWidget" name="stackedWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="project_page">
          <layout class="QGridLayout" name="gridLayout">
@@ -569,12 +642,12 @@ font-size:20px</string>
                      <enum>QLayout::SetDefaultConstraint</enum>
                     </property>
                     <item>
-                     <widget class="QPushButton" name="new_file_tree_button">
+                     <widget class="QPushButton" name="edit_custom_file_tree_button">
                       <property name="text">
-                       <string>New file tree</string>
+                       <string>Edit Custom File Tree</string>
                       </property>
                       <property name="icon">
-                       <iconset resource="resources.qrc">
+                       <iconset resource="../resources.qrc">
                         <normaloff>:/icons/icons/24x24/file_tree.png</normaloff>:/icons/icons/24x24/file_tree.png</iconset>
                       </property>
                      </widget>
@@ -585,7 +658,7 @@ font-size:20px</string>
                        <string>Set File Tree</string>
                       </property>
                       <property name="icon">
-                       <iconset resource="resources.qrc">
+                       <iconset resource="../resources.qrc">
                         <normaloff>:/icons/icons/24x24/file_tree.png</normaloff>:/icons/icons/24x24/file_tree.png</iconset>
                       </property>
                      </widget>
@@ -643,7 +716,7 @@ font-size:20px</string>
                   <string/>
                  </property>
                  <property name="icon">
-                  <iconset resource="resources.qrc">
+                  <iconset resource="../resources.qrc">
                    <normaloff>:/icons/icons/24x24/cil-reload.png</normaloff>:/icons/icons/24x24/cil-reload.png</iconset>
                  </property>
                 </widget>
@@ -656,7 +729,7 @@ font-size:20px</string>
                 <string>Generate Access Control </string>
                </property>
                <property name="icon">
-                <iconset resource="resources.qrc">
+                <iconset resource="../resources.qrc">
                  <normaloff>:/icons/icons/subversion.png</normaloff>:/icons/icons/subversion.png</iconset>
                </property>
               </widget>
@@ -686,7 +759,7 @@ font-size:20px</string>
                 <string>generate project files</string>
                </property>
                <property name="icon">
-                <iconset resource="resources.qrc">
+                <iconset resource="../resources.qrc">
                  <normaloff>:/icons/icons/24x24/cil-file.png</normaloff>:/icons/icons/24x24/cil-file.png</iconset>
                </property>
               </widget>
@@ -729,7 +802,7 @@ font-size:20px</string>
                        <string>Set SVN url</string>
                       </property>
                       <property name="icon">
-                       <iconset resource="resources.qrc">
+                       <iconset resource="../resources.qrc">
                         <normaloff>:/icons/icons/subversion.png</normaloff>:/icons/icons/subversion.png</iconset>
                       </property>
                      </widget>
@@ -763,7 +836,22 @@ font-size:20px</string>
              </size>
             </property>
             <property name="styleSheet">
-             <string notr="true"/>
+             <string notr="true">QLineEdit{
+font-size:17px;
+background:transparent;
+border:none;
+color: white;
+border-bottom: 1px solid gray;
+}
+
+QLineEdit {
+	color: black;
+    border: 2px solid blue;
+    border-radius: 10px;
+    padding: 0 8px;
+    background: white;
+    selection-background-color: darkgray;
+}</string>
             </property>
             <property name="frameShape">
              <enum>QFrame::StyledPanel</enum>
@@ -788,7 +876,7 @@ font-size:20px</string>
                     <string/>
                    </property>
                    <property name="pixmap">
-                    <pixmap resource="resources.qrc">:/icons/icons/blender.png</pixmap>
+                    <pixmap resource="../resources.qrc">:/icons/icons/blender.png</pixmap>
                    </property>
                   </widget>
                  </item>
@@ -822,7 +910,7 @@ font-size:20px</string>
                     <string/>
                    </property>
                    <property name="pixmap">
-                    <pixmap resource="resources.qrc">:/icons/icons/24x24/cil-folder-open.png</pixmap>
+                    <pixmap resource="../resources.qrc">:/icons/icons/24x24/cil-folder-open.png</pixmap>
                    </property>
                   </widget>
                  </item>
@@ -862,7 +950,7 @@ font-size:20px</string>
                     <string/>
                    </property>
                    <property name="pixmap">
-                    <pixmap resource="resources.qrc">:/icons/icons/subversion.png</pixmap>
+                    <pixmap resource="../resources.qrc">:/icons/icons/subversion.png</pixmap>
                    </property>
                   </widget>
                  </item>
@@ -894,7 +982,7 @@ font-size:20px</string>
                   <string>Save Settings</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="resources.qrc">
+                  <iconset resource="../resources.qrc">
                    <normaloff>:/icons/icons/24x24/cil-save.png</normaloff>:/icons/icons/24x24/cil-save.png</iconset>
                  </property>
                 </widget>
@@ -903,6 +991,312 @@ font-size:20px</string>
              </item>
              <item>
               <spacer name="verticalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="file_tree_page">
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="0" column="0">
+           <widget class="QFrame" name="file_tree_wrapper">
+            <property name="maximumSize">
+             <size>
+              <width>563</width>
+              <height>734</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QLineEdit{
+font-size:17px;
+background:transparent;
+border:none;
+color: white;
+border-bottom: 1px solid gray;
+}
+
+QLineEdit {
+	color: black;
+    border: 2px solid blue;
+    border-radius: 10px;
+    padding: 0 8px;
+    background: white;
+    selection-background-color: darkgray;
+}</string>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_7">
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_8">
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_30">
+                 <item>
+                  <widget class="QLabel" name="label_10">
+                   <property name="maximumSize">
+                    <size>
+                     <width>30</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="pixmap">
+                    <pixmap resource="../resources.qrc">:/icons/icons/24x24/cil-folder-open.png</pixmap>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_11">
+                   <property name="text">
+                    <string>root</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="file_tree_root_input"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_31">
+               <item>
+                <widget class="QLabel" name="label_27">
+                 <property name="maximumSize">
+                  <size>
+                   <width>30</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap resource="../resources.qrc">:/icons/icons/24x24/cil-folder-open.png</pixmap>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_28">
+                 <property name="text">
+                  <string>folder path</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_32">
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_33">
+                 <item>
+                  <widget class="QLabel" name="label_29">
+                   <property name="text">
+                    <string>asset</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="asset_path_input"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_34">
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_35">
+                 <item>
+                  <widget class="QLabel" name="label_30">
+                   <property name="text">
+                    <string>shot</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="shot_path_input"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_36">
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_37">
+                 <item>
+                  <widget class="QLabel" name="label_31">
+                   <property name="text">
+                    <string>sequence</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="sequence_path_input"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_38">
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_39">
+                 <item>
+                  <widget class="QLabel" name="label_32">
+                   <property name="text">
+                    <string>scenes</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="scenes_path_input"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_40">
+               <item>
+                <widget class="QLabel" name="label_33">
+                 <property name="maximumSize">
+                  <size>
+                   <width>30</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="pixmap">
+                  <pixmap resource="../resources.qrc">:/icons/icons/24x24/cil-file.png</pixmap>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_34">
+                 <property name="text">
+                  <string>file name</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_41">
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_42">
+                 <item>
+                  <widget class="QLabel" name="label_35">
+                   <property name="text">
+                    <string>asset</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="asset_name_input"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_43">
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_44">
+                 <item>
+                  <widget class="QLabel" name="label_36">
+                   <property name="text">
+                    <string>shot</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="shot_name_input"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_45">
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_46">
+                 <item>
+                  <widget class="QLabel" name="label_37">
+                   <property name="text">
+                    <string>sequence</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="sequence_name_input"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_47">
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_48">
+                 <item>
+                  <widget class="QLabel" name="label_38">
+                   <property name="text">
+                    <string>scenes</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="scenes_name_input"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_49">
+               <property name="leftMargin">
+                <number>200</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QPushButton" name="save_file_tree_button">
+                 <property name="text">
+                  <string>Save Settings</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../resources.qrc">
+                   <normaloff>:/icons/icons/24x24/cil-save.png</normaloff>:/icons/icons/24x24/cil-save.png</iconset>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <spacer name="verticalSpacer_3">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
                </property>
@@ -963,6 +1357,7 @@ font-size:20px</string>
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <resources>
+  <include location="../resources.qrc"/>
   <include location="resources.qrc"/>
  </resources>
  <connections/>

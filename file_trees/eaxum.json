@@ -4,7 +4,7 @@
         "root": "projects",
         "folder_path": {
             "asset": "<Project>/lib/<AssetType>",
-        "shot": "<Project>/scenes/<Sequence>/<Shot>",
+            "shot": "<Project>/scenes/<Sequence>/<Shot>",
             "sequence": "<Project>/sequences/<Sequence>/<TaskType>",
             "scene": "<Project>/scenes/<Sequence>/<Scene>/<TaskType>",
             "style": "lowercase"
