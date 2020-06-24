@@ -540,8 +540,4 @@ class Project():
 
 if __name__ == '__main__':
     pass
-    p = Project(debug= True)
-    p.login('http://rukia/api', 'aadesada', 'efosadiya')
-    p.svn_config(project_name='tao',
-                 svn_parent_path='//rukia/projects/')
 
