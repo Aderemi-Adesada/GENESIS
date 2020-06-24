@@ -41,7 +41,8 @@ class MainWindow(QMainWindow):
         self.save_settings_button.clicked.connect(self.settings)
         self.save_file_tree_button.clicked.connect(self.file_tree_setting)
         self.set_svn_button.clicked.connect(lambda:project.svn_url(project_name=selected_project(),
-                                                               url=self.svn_url_input.text()))
+                                                                   local_url=self.local_svn_url_input.text(),
+                                                                   remote_url=self.remote_svn_url_input.text()))
 
     def toggleMenu(self, maxWidth, enable):
         if enable:

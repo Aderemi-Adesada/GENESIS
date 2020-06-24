@@ -580,7 +580,7 @@ font-size:20px</string>
       <item>
        <widget class="QStackedWidget" name="stackedWidget">
         <property name="currentIndex">
-         <number>2</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="project_page">
          <layout class="QGridLayout" name="gridLayout">
@@ -779,7 +779,7 @@ font-size:20px</string>
                 <item row="0" column="0">
                  <layout class="QVBoxLayout" name="verticalLayout_9">
                   <item>
-                   <widget class="QLineEdit" name="svn_url_input">
+                   <widget class="QLineEdit" name="local_svn_url_input">
                     <property name="minimumSize">
                      <size>
                       <width>0</width>
@@ -787,7 +787,20 @@ font-size:20px</string>
                      </size>
                     </property>
                     <property name="placeholderText">
-                     <string>set svn url </string>
+                     <string>local svn url </string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="remote_svn_url_input">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>30</height>
+                     </size>
+                    </property>
+                    <property name="placeholderText">
+                     <string>remote svn url </string>
                     </property>
                    </widget>
                   </item>
@@ -1358,7 +1371,7 @@ QLineEdit {
  </widget>
  <resources>
   <include location="../resources.qrc"/>
-  <include location="resources.qrc"/>
+  <include location="../resources.qrc"/>
  </resources>
  <connections/>
 </ui>
