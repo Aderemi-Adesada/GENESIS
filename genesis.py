@@ -323,18 +323,29 @@ class Project():
         # process svn config
         if os.path.isdir(f'{svn_parent_path}/{project_name}'):
             self.task_info_gen(project_name, progress_bar, message_box)
-            # print(self.tasks_info[2]['assignees'])
+            maps_dirs = ['uni_cin:/lib/maps','uni_cin:/lib/envs/maps', 'uni_cin:/lib/props/maps', 'uni_cin:/lib/chars/maps', 'uni_cin:/lib/nodes/maps']
             task_infos = self.tasks_info
             config = ConfigParser()
             config['groups'] = {
-                'admin': ''
+                'admin': '', 'maps': '', 'edit': ''
             }
 
             config['/'] = {
-                '*': 'r'
+                '*': 'r', '@admin': 'rw'
             }
 
-            config.set('/', 'admin', 'rw')
+            config['uni_cin:/edit'] = {
+                '@edit': 'rw'
+            }
+            for user in all_users:
+                config.set('uni_cin:/edit', user[self.login_name], '')
+
+            for directory in maps_dirs:
+                config[directory] = {
+                    '@maps': 'rw'
+                }
+                for user in all_users:
+                    config.set(directory, user[self.login_name], '')
 
             for task_info in task_infos:
                 set_write_permissions(task_info)
@@ -523,6 +534,22 @@ class Project():
             error.setText('blender path not existing')
             error.setIcon(QMessageBox.Critical)
             error.exec_()
+
+    def create_repo(self, project_name, svn_path):
+        try:
+            shutil.copytree('data/svn_repo', f'{svn_path}/{project_name}')
+            error = QMessageBox()
+            error.setWindowTitle('svn')
+            error.setText('Done')
+            error.setIcon(QMessageBox.Information)
+            error.exec_()
+        except FileExistsError:
+            error = QMessageBox()
+            error.setWindowTitle('svn Error')
+            error.setText('repository folder already exist')
+            error.setIcon(QMessageBox.Critical)
+            error.exec_()
+
 
     def svn_url(self, project_name, local_url, remote_url):
         project = gazu.project.get_project_by_name(project_name)

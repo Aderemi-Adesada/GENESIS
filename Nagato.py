@@ -40,6 +40,8 @@ class MainWindow(QMainWindow):
         self.open_blender.clicked.connect(lambda: project.open_blender(self.blender_directory_input.text()))
         self.save_settings_button.clicked.connect(self.settings)
         self.save_file_tree_button.clicked.connect(self.file_tree_setting)
+        self.create_svn_repo.clicked.connect(lambda: project.create_repo(project_name=selected_project(),
+                                                                         svn_path=self.svn_parent_path_input.text()))
         self.set_svn_button.clicked.connect(lambda:project.svn_url(project_name=selected_project(),
                                                                    local_url=self.local_svn_url_input.text(),
                                                                    remote_url=self.remote_svn_url_input.text()))
@@ -263,7 +265,8 @@ class LoginWindow(QMainWindow):
         host = self.host_url.text()
         username = self.username_input.text()
         password = self.password_input.text()
-        project.login(host, username, password, switch=self.switch_window)
+        # project.login(host, username, password, switch=self.switch_window)
+        project.login('http://rukia/api', 'aadesada', 'eaxum', switch=self.switch_window)
 
 
 class Controller:
