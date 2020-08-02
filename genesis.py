@@ -6,8 +6,8 @@ import json
 from configparser import ConfigParser
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QMessageBox
-from gazu.exception import MethodNotAllowedException, RouteNotFoundException
-from requests.exceptions import MissingSchema, InvalidSchema, ConnectionError
+from gazu.exception import MethodNotAllowedException, RouteNotFoundException, NotAuthenticatedException, ParameterException
+from requests.exceptions import MissingSchema, InvalidSchema, ConnectionError, InvalidURL
 
 
 class Project():
@@ -23,16 +23,9 @@ class Project():
             gazu.log_in(username, password)
             if switch != None:
                 switch.emit()
-        except gazu.exception.NotAuthenticatedException:
-            if self.debug is False:
-                error = QMessageBox()
-                error.setWindowTitle('Login Error')
-                error.setText('Login failure, Wrong credentials')
-                error.setIcon(QMessageBox.Critical)
-                error.exec_()
-            else:
-                print('Login failure, Wrong credentials')
-        except gazu.exception.ParameterException:
+            if self.debug == True:
+                return gazu.log_in(username, password)['user']['full_name']
+        except (NotAuthenticatedException, ParameterException):
             if self.debug is False:
                 error = QMessageBox()
                 error.setWindowTitle('Login Error')
@@ -40,8 +33,8 @@ class Project():
                 error.setIcon(QMessageBox.Critical)
                 error.exec_()
             else:
-                print('Login failure, Wrong credentials. pls check login details or host')
-        except (MethodNotAllowedException, RouteNotFoundException):
+                return 'Login failure, Wrong credentials. pls check login details or host'
+        except (MethodNotAllowedException, RouteNotFoundException, InvalidURL):
             if self.debug is False:
                 error = QMessageBox()
                 error.setWindowTitle('Login Error')
@@ -49,7 +42,7 @@ class Project():
                 error.setIcon(QMessageBox.Critical)
                 error.exec_()
             else:
-                print('invalid host url')
+                return 'invalid host url'
         except (MissingSchema, InvalidSchema, ConnectionError) as err:
             if self.debug is False:
                 error = QMessageBox()
@@ -58,7 +51,7 @@ class Project():
                 error.setIcon(QMessageBox.Critical)
                 error.exec_()
             else:
-                print(str(err))
+                return 'bad schema or bad connection'
         except Exception as e:
             if self.debug is False:
                 error = QMessageBox()
@@ -67,7 +60,7 @@ class Project():
                 error.setIcon(QMessageBox.Critical)
                 error.exec_()
             else:
-                print('Login Error')
+                return 'Login Error. something went wrong'
 
     def folder_structure(self, mount_point, project_name):
         project_path = mount_point +'/'+ project_name
@@ -266,6 +259,7 @@ class Project():
                     config[task_info['svn_dir']] = {
                         assignee[self.login_name]: 'rw'
                     }
+            config.set(task_info['svn_dir'], '@admin', 'rw')
 
             # print(task_info['assignees'])
             # if task_info['svn_dir'] in config:
@@ -323,27 +317,29 @@ class Project():
         # process svn config
         if os.path.isdir(f'{svn_parent_path}/{project_name}'):
             self.task_info_gen(project_name, progress_bar, message_box)
-            maps_dirs = ['uni_cin:/lib/maps','uni_cin:/lib/envs/maps', 'uni_cin:/lib/props/maps', 'uni_cin:/lib/chars/maps', 'uni_cin:/lib/nodes/maps']
+            maps_dirs = [f'{project_name}:/lib/maps',f'{project_name}:/lib/envs/maps', f'{project_name}:/lib/props/maps', f'{project_name}:/lib/chars/maps', f'{project_name}:/lib/nodes/maps']
             task_infos = self.tasks_info
             config = ConfigParser()
             config['groups'] = {
-                'admin': '', 'maps': '', 'edit': ''
+                'admin': 'suser', 'maps': '', 'edit': ''
             }
 
             config['/'] = {
                 '*': 'r', '@admin': 'rw'
             }
 
-            config['uni_cin:/edit'] = {
+            config[f'{project_name}:/edit'] = {
                 '@edit': 'rw'
             }
+            config.set(f'{project_name}:/edit', '@admin', 'rw')
             for user in all_users:
-                config.set('uni_cin:/edit', user[self.login_name], '')
+                config.set(f'{project_name}:/edit', user[self.login_name], '')
 
             for directory in maps_dirs:
                 config[directory] = {
                     '@maps': 'rw'
                 }
+                config.set(directory, '@admin', 'rw')
                 for user in all_users:
                     config.set(directory, user[self.login_name], '')
 
@@ -411,7 +407,7 @@ class Project():
                 progress_bar.emit(progress)
                 message_box.emit('invalid mount point')
             else:
-                print('invalid mount point')
+                return 'invalid mount point'
 
         if not os.path.isdir(project_path):
             if os.path.isfile(blender):
@@ -476,7 +472,10 @@ class Project():
                 for scene in scenes:
                     self.scene_gen(scene, project_path, blender)
                     progress += ((1) / len(scenes)) * 50
-                    progress_bar.emit(progress)
+                    if self.debug is False:
+                        progress_bar.emit(progress)
+                    else:
+                        print(progress)
                 progress = 0
                 if self.debug is False:
                     progress_bar.emit(progress)
@@ -484,21 +483,21 @@ class Project():
                     print(progress)
                 if self.debug is False:
                     message_box.emit('Done')
-                else:print('Done')
+                else:return 'Done'
             else:
                 if self.debug is False:
                     progress = 0
                     progress_bar.emit(progress)
                     message_box.emit('Blender executable do not exist')
                 else:
-                    print('Blender executable do not exist')
+                    return 'Blender executable do not exist'
         else:
             if self.debug is False:
                 progress = 0
                 progress_bar.emit(progress)
                 message_box.emit('project already exist in stated directory')
             else:
-                print('project already exist in stated directory')
+                return 'project already exist in stated directory'
 
     def set_file_tree(self, project_name, file_tree_name):
         project = gazu.project.get_project_by_name(project_name)
