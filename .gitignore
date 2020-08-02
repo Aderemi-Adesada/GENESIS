@@ -4,3 +4,5 @@ __pycache__
 build
 genesis-env
 windows_dist
+/test.py
+dist
