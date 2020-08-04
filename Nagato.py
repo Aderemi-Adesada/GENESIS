@@ -265,8 +265,7 @@ class LoginWindow(QMainWindow):
         host = self.host_url.text()
         username = self.username_input.text()
         password = self.password_input.text()
-        # project.login(host, username, password, switch=self.switch_window)
-        project.login('http://rukia/api', 'aadesada', 'eaxum', switch=self.switch_window)
+        project.login(host, username, password, switch=self.switch_window)
 
 
 class Controller:
