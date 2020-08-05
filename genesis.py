@@ -3,7 +3,7 @@ import gazu
 import shutil
 import ctypes
 import json
-from configparser import ConfigParser
+from configparser import ConfigParser, NoSectionError
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QMessageBox
 from gazu.exception import MethodNotAllowedException, RouteNotFoundException, NotAuthenticatedException, ParameterException
@@ -259,7 +259,13 @@ class Project():
                     config[task_info['svn_dir']] = {
                         assignee[self.login_name]: 'rw'
                     }
-            config.set(task_info['svn_dir'], '@admin', 'rw')
+            try:
+                config.set(task_info['svn_dir'], '@admin', 'rw')
+            except NoSectionError:
+                config[task_info['svn_dir']] = {
+                        '@admin': 'rw'
+                    }
+
 
             # print(task_info['assignees'])
             # if task_info['svn_dir'] in config:

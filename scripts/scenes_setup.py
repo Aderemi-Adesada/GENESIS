@@ -34,9 +34,14 @@ if shot_metadata[0] == None:
     start_frame = 1
     end_frame = 100
 else:
-    frame_rate = int(shot_metadata[0]['fps'])
-    start_frame = int(shot_metadata[0]['frame_in'])
-    end_frame = int(shot_metadata[0]['frame_out'])
+    try:
+        frame_rate = int(shot_metadata[0]['fps'])
+        start_frame = int(shot_metadata[0]['frame_in'])
+        end_frame = int(shot_metadata[0]['frame_out'])
+    except KeyError:
+        frame_rate = 24
+        start_frame = 1
+        end_frame = 100
 
 bpy.context.scene.frame_start = start_frame
 bpy.context.scene.frame_end = end_frame

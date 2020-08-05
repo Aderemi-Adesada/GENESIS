@@ -1,5 +1,5 @@
 {
-  "mount point": "C:\\path\\to\\projects\\folder",
-  "svn parent path": "C:\\path\\to\\projects\\svn_parent_path",
-  "blender directory": "C:\\path\\to\\projects\\blender.exe"
+  "mount point": "C:\\Users\\Tanjiro\\Projects\\task",
+  "svn parent path": "\\\\path\\to\\svn_parent-path",
+  "blender directory": "C:\\Users\\Tanjiro\\Eaxum\\Software\\Blender\\blender.exe"
 }
